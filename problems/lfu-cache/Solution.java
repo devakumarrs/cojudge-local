@@ -1,0 +1,5 @@
+class Solution {
+    public int[] runLfuCache(String[] operations, int[][] args) {
+        return new int[0];
+    }
+}
