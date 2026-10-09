@@ -10,6 +10,19 @@ ListNode {
 */
 class Solution {
     public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
-        
+        ListNode sent = new ListNode(0);
+        ListNode p1 = list1, p2 = list2, p3 = sent;
+        while (p1 != null && p2 != null) {
+            if (p1.val < p2.val) {
+                p3.next = p1;
+                p1 = p1.next;
+            } else {
+                p3.next = p2;
+                p2 = p2.next;
+            }
+            p3 = p3.next;
+        }
+        p3.next = p1 == null ? p2 : p1;
+        return sent.next;
     }
 }
