@@ -10,6 +10,17 @@ ListNode {
 */
 class Solution {
     public boolean hasCycle(ListNode head) {
-        
+        if (head == null) {
+            return false;
+        }
+        ListNode sent = new ListNode(0, head);
+        ListNode slow = sent, fast = head;
+        while (slow != null && fast != null && fast.next != null) {
+            if (slow == fast)
+                return true;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return false;
     }
 }
