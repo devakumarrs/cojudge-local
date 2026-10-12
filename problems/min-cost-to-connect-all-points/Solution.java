@@ -16,12 +16,11 @@ class Solution {
             }
         }
 
-        public void unionBySize(int n1, int n2) {
-            if (isConnected(n1, n2)) {
-                return;
-            }
+        public boolean unionBySize(int n1, int n2) {
             int up1 = findUltimateParent(n1);
             int up2 = findUltimateParent(n2);
+            if (up1 == up2)
+                return false;
             if (size[up1] > size[up2]) {
                 size[up1] += size[up2];
                 parent[up2] = up1;
@@ -29,10 +28,7 @@ class Solution {
                 size[up2] += size[up1];
                 parent[up1] = up2;
             }
-        }
-
-        public boolean isConnected(int n1, int n2) {
-            return findUltimateParent(n1) == findUltimateParent(n2);
+            return true;
         }
 
         private int findUltimateParent(int node) {
@@ -48,22 +44,19 @@ class Solution {
         List<int[]> edges = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
-                edges.add(new int[] {i, j});
+                int cost = Math.abs(points[i][0] - points[j][0])
+                        + Math.abs(points[i][1] - points[j][1]);
+                edges.add(new int[] {i, j, cost});
             }
         }
-        edges.sort((arr1, arr2) -> cost(points, arr1[0], arr1[1]) - cost(points, arr2[0], arr2[1]));
+        edges.sort((arr1, arr2) -> arr1[2] - arr2[2]);
         DisjointSet ds = new DisjointSet(n);
-        int val = 0;
+        int minCost = 0;
         for (int[] edge : edges) {
-            if (!ds.isConnected(edge[0], edge[1])) {
-                val += cost(points, edge[0], edge[1]);
-                ds.unionBySize(edge[0], edge[1]);
+            if (ds.unionBySize(edge[0], edge[1])) {
+                minCost += edge[2];
             }
         }
-        return val;
-    }
-
-    private int cost(int[][] points, int i, int j) {
-        return Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
+        return minCost;
     }
 }
