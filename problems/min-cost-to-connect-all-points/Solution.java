@@ -8,10 +8,10 @@ class Solution {
         int[] parent;
 
         public DisjointSet(int n) {
-            size = new int[n + 1];
+            size = new int[n];
             Arrays.fill(size, 1);
-            parent = new int[n + 1];
-            for (int i = 0; i <= n; i++) {
+            parent = new int[n];
+            for (int i = 0; i < n; i++) {
                 parent[i] = i;
             }
         }
@@ -41,7 +41,7 @@ class Solution {
 
     public int minCostConnectPoints(int[][] points) {
         int n = points.length;
-        List<int[]> edges = new ArrayList<>();
+        List<int[]> edges = new ArrayList<>((n * (n - 1)) / 2);
         for (int i = 0; i < n; i++) {
             for (int j = i + 1; j < n; j++) {
                 int cost = Math.abs(points[i][0] - points[j][0])
@@ -49,12 +49,15 @@ class Solution {
                 edges.add(new int[] {i, j, cost});
             }
         }
-        edges.sort((arr1, arr2) -> arr1[2] - arr2[2]);
+        edges.sort((arr1, arr2) -> Integer.compare(arr1[2], arr2[2]));
         DisjointSet ds = new DisjointSet(n);
-        int minCost = 0;
+        int minCost = 0, edgeCount = 0;
         for (int[] edge : edges) {
             if (ds.unionBySize(edge[0], edge[1])) {
                 minCost += edge[2];
+                edgeCount++;
+                if (edgeCount == n - 1)
+                    break;
             }
         }
         return minCost;
