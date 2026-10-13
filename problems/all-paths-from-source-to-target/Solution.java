@@ -1,0 +1,6 @@
+import java.util.*;
+class Solution {
+    public List<List<Integer>> allPathsSourceTarget(int[][] graph) {
+        return new ArrayList<>();
+    }
+}

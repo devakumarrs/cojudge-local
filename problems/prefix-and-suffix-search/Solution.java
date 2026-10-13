@@ -1,0 +1,5 @@
+class Solution {
+    public int wordFilter(String[] words, String pref, String suff) {
+        
+    }
+}
