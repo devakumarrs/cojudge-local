@@ -1,5 +1,7 @@
+import java.util.*;
+
 class Solution {
     public String findShortestWay(int[][] maze, int[] ball, int[] hole) {
-        
+        return null;
     }
 }

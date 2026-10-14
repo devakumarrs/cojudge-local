@@ -1,5 +1,7 @@
+import java.util.*;
+
 class Solution {
     public int numberOfPatterns(int m, int n) {
-        
+        return 0;
     }
 }

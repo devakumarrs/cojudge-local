@@ -1,3 +1,5 @@
+import java.util.*;
+
 /*
 Definition for singly-linked list. 
 ListNode {
@@ -10,6 +12,6 @@ ListNode {
 */
 class Solution {
     public ListNode sortList(ListNode head) {
-        
+        return null;
     }
 }

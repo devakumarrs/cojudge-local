@@ -12,6 +12,6 @@ class TreeNode {
 import java.util.*;
 class Solution {
     public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
-        
+        return null;
     }
 }

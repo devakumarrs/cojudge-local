@@ -1,0 +1,27 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] _cliArgs) {
+        // --- Example 1 ---
+        {
+            Solution sol = new Solution();
+            int[] nums = new int[]{1, 2, 3, 1};
+            int indexDiff = 3;
+            int valueDiff = 0;
+
+            boolean result = sol.containsNearbyAlmostDuplicate(nums, indexDiff, valueDiff);
+            System.out.println("Example 1: " + result);
+        }
+
+        // --- Example 2 ---
+        {
+            Solution sol = new Solution();
+            int[] nums = new int[]{1, 5, 9, 1, 5, 9};
+            int indexDiff = 2;
+            int valueDiff = 3;
+
+            boolean result = sol.containsNearbyAlmostDuplicate(nums, indexDiff, valueDiff);
+            System.out.println("Example 2: " + result);
+        }
+    }
+}

@@ -1,3 +1,5 @@
+import java.util.*;
+
 /*
 Definition for singly-linked list.
 class ListNode {
@@ -10,6 +12,6 @@ class ListNode {
 */
 class Solution {
     public ListNode[] splitListToParts(ListNode head, int k) {
-        
+        return null;
     }
 }

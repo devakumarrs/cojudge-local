@@ -1,0 +1,25 @@
+import java.util.*;
+
+public class Main {
+    public static void main(String[] _cliArgs) {
+        // --- Example 1 ---
+        {
+            Solution sol = new Solution();
+            int[] bulbs = new int[]{1, 3, 2};
+            int k = 1;
+
+            int result = sol.kEmptySlots(bulbs, k);
+            System.out.println("Example 1: " + result);
+        }
+
+        // --- Example 2 ---
+        {
+            Solution sol = new Solution();
+            int[] bulbs = new int[]{1, 2, 3};
+            int k = 1;
+
+            int result = sol.kEmptySlots(bulbs, k);
+            System.out.println("Example 2: " + result);
+        }
+    }
+}

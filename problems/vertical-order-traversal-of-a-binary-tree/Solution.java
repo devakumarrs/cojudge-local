@@ -12,6 +12,6 @@ class TreeNode {
 import java.util.*;
 class Solution {
     public List<List<Integer>> verticalTraversal(TreeNode root) {
-        
+        return null;
     }
 }

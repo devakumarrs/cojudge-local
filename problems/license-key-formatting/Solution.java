@@ -1,3 +1,5 @@
+import java.util.*;
+
 class Solution {
     public String licenseKeyFormatting(String s, int k) {
         return "";

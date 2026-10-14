@@ -1,5 +1,7 @@
+import java.util.*;
+
 class Solution {
     public int reachableNodes(int[][] edges, int maxMoves, int n) {
-        
+        return 0;
     }
 }

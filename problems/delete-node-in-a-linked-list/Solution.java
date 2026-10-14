@@ -1,3 +1,5 @@
+import java.util.*;
+
 /*
 Definition for singly-linked list.
 class ListNode {
@@ -8,6 +10,6 @@ class ListNode {
 */
 class Solution {
     public ListNode deleteNode(ListNode head, int val) {
-        
+        return null;
     }
 }
