@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Debug Current Problem",
+            "request": "launch",
+            "mainClass": "Main",
+            "cwd": "${fileDirname}",
+            "classPaths": [
+                "${fileDirname}"
+            ],
+            "preLaunchTask": "prepare-problem"
+        }
+    ]
+}

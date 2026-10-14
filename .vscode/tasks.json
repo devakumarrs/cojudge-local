@@ -1,0 +1,21 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "prepare-problem",
+            "type": "process",
+            "command": "${workspaceFolder}/.vscode/prepare-problem.sh",
+            "args": [
+                "${relativeFileDirname}"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "group": "build",
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared"
+            }
+        }
+    ]
+}

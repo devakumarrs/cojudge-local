@@ -1,0 +1,5 @@
+# Ignore only the dynamic VSCode settings file (keep launch.json, tasks.json, and scripts tracked)
+.vscode/settings.json
+
+# Compiled bytecode
+*.class
