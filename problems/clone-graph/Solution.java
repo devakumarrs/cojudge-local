@@ -1,34 +1,46 @@
 /*
- * // Definition for a GraphNode. class GraphNode { public int val; public List<GraphNode>
- * neighbors; public GraphNode() { val = 0; neighbors = new ArrayList<GraphNode>(); } public
- * GraphNode(int _val) { val = _val; neighbors = new ArrayList<GraphNode>(); } public GraphNode(int
- * _val, List<GraphNode> _neighbors) { val = _val; neighbors = _neighbors; } };
- */
+// Definition for a GraphNode.
+class GraphNode {
+    public int val;
+    public List<GraphNode> neighbors;
+    public GraphNode() {
+        val = 0;
+        neighbors = new ArrayList<GraphNode>();
+    }
+    public GraphNode(int _val) {
+        val = _val;
+        neighbors = new ArrayList<GraphNode>();
+    }
+    public GraphNode(int _val, List<GraphNode> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+*/
 
 import java.util.*;
 
 // DFS
 
-class Solution {
-    private Map<GraphNode, GraphNode> map = new HashMap<>();
+// class Solution {
+//     private Map<GraphNode, GraphNode> map = new HashMap<>();
 
-    public GraphNode cloneGraph(GraphNode node) {
-        if (node == null)
-            return null;
-        if (map.containsKey(node)) {
-            return map.get(node);
-        }
-        GraphNode clonedNode = new GraphNode(node.val);
-        map.put(node, clonedNode);
-        for (GraphNode neighbor : node.neighbors) {
-            clonedNode.neighbors.add(cloneGraph(neighbor));
-        }
-        return clonedNode;
-    }
-}
+//     public GraphNode cloneGraph(GraphNode node) {
+//         if (node == null)
+//             return null;
+//         if (map.containsKey(node)) {
+//             return map.get(node);
+//         }
+//         GraphNode clonedNode = new GraphNode(node.val);
+//         map.put(node, clonedNode);
+//         for (GraphNode neighbor : node.neighbors) {
+//             clonedNode.neighbors.add(cloneGraph(neighbor));
+//         }
+//         return clonedNode;
+//     }
+// }
 
 // BFS
-
 
 class Solution {
 
