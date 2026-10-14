@@ -8,8 +8,11 @@ class Solution {
                 current = next;
                 dist++;
             }
+            if (current >= nums.length - 1) {
+                return dist;
+            }
             next = Math.max(next, i + nums[i]);
         }
-        return dist;
+        return -1;
     }
 }
