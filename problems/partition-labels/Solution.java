@@ -2,29 +2,23 @@ import java.util.*;
 
 class Solution {
     public int[] partitionLabels(String s) {
-        Map<Character, int[]> map = new HashMap<>();
+        int[] lastOccurrence = new int[26];
         for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
-            int[] arr = map.getOrDefault(ch, new int[] { i, i });
-            arr[1] = i;
-            map.put(ch, arr);
+            lastOccurrence[s.charAt(i) - 'a'] = i;
         }
-        int[] last = new int[] { 0, 0 };
+        int start = 0, end = 0;
         List<Integer> result = new ArrayList<>();
-        for (char ch : s.toCharArray()) {
-            if (!map.containsKey(ch)) {
-                continue;
-            }
-            int[] current = map.get(ch);
-            if (current[0] > last[1]) {
-                result.add(last[1] - last[0] + 1);
-                last = current;
+        for (int i = 0; i < s.length(); i++) {
+            int last = lastOccurrence[s.charAt(i) - 'a'];
+            if (i > end) {
+                result.add(end - start + 1);
+                start = i;
+                end = last;
             } else {
-                last[1] = Math.max(last[1], current[1]);
+                end = Math.max(end, last);
             }
-            map.remove(ch);
         }
-        result.add(last[1] - last[0] + 1);
+        result.add(end - start + 1);
         return result.stream().mapToInt(Integer::intValue).toArray();
     }
 }
