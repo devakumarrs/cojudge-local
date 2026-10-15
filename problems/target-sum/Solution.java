@@ -1,13 +1,10 @@
-import java.util.*;
-
 class Solution {
     public int findTargetSumWays(int[] nums, int target) {
         int n = nums.length;
-        int[] ps = new int[n + 1];
-        for (int i = 1; i <= n; i++) {
-            ps[i] = ps[i - 1] + nums[i - 1];
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
         }
-        int sum = ps[n];
         if (target > sum || target < -sum) {
             return 0;
         }
