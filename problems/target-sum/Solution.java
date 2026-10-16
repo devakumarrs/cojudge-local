@@ -8,19 +8,17 @@ class Solution {
         if (target > sum || target < -sum) {
             return 0;
         }
-        target += sum;
         int[][] dp = new int[n + 1][2 * sum + 1];
         dp[0][sum] = 1;
+        int reach = 0;
         for (int i = 1; i <= n; i++) {
-            for (int j = 0; j <= 2 * sum; j++) {
-                if (j - nums[i - 1] >= 0) {
-                    dp[i][j] += dp[i - 1][j - nums[i - 1]];
-                }
-                if (j + nums[i - 1] <= 2 * sum) {
-                    dp[i][j] += dp[i - 1][j + nums[i - 1]];
-                }
+            int offset = nums[i - 1];
+            for (int j = -reach; j <= reach; j++) {
+                dp[i][j + sum + offset] += dp[i - 1][j + sum];
+                dp[i][j + sum - offset] += dp[i - 1][j + sum];
             }
+            reach += offset;
         }
-        return dp[n][target];
+        return dp[n][target + sum];
     }
 }
