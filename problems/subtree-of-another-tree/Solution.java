@@ -13,6 +13,22 @@ class TreeNode {
 */
 class Solution {
     public boolean isSubtree(TreeNode root, TreeNode subRoot) {
-        return false;
+        StringBuilder sb1 = new StringBuilder();
+        StringBuilder sb2 = new StringBuilder();
+        helper(root, sb1);
+        helper(subRoot, sb2);
+        return sb1.indexOf(sb2.toString()) > -1;
+    }
+
+    private void helper(TreeNode root, StringBuilder sb) {
+        if (root == null) {
+            sb.append("N,");
+            return;
+        }
+        sb.append('#');
+        sb.append(root.val);
+        sb.append(',');
+        helper(root.left, sb);
+        helper(root.right, sb);
     }
 }
