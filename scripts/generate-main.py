@@ -16,13 +16,15 @@ Execution Modes:
      - Patches `<userClassName>.java` on disk if needed (adds `import java.util.*;`,
        strips invalid `public` modifiers from classes not matching the filename,
        and injects dummy return statements into empty starter methods).
-     - Generates `Main.java` with up to 2 test cases (`Example 1` & `Example 2`).
+     - Generates `Main.java` with up to 2 test cases (`Example 1` & `Example 2`),
+       complete with expected vs. actual assertions and ANSI-colored output.
      - Compiles `Main.java` and `<userClassName>.java` with `--release 21` and
        removes all generated `.class` files.
 
   2. Solved Mode (`generate-main.py <problem_dir> --solved`):
      - Treats `<userClassName>.java` as strictly READ-ONLY (never modifies it).
-     - Generates `Main.java` with up to 2 test cases (`Example 1` & `Example 2`).
+     - Generates `Main.java` with up to 2 test cases (`Example 1` & `Example 2`),
+       complete with expected vs. actual assertions and ANSI-colored output.
      - Verifies that the untouched `<userClassName>.java` and generated
        `Main.java` compile cleanly together under `--release 21`.
 """
@@ -72,6 +74,21 @@ def default_return_value(ret_type):
     if ret_type == "char":
         return "' '"
     return "null"
+
+
+def escape_java_string(val):
+    """Escape a Python string into a Java string literal (or 'null' if None)."""
+    if val is None:
+        return "null"
+    s = str(val)
+    s = (
+        s.replace("\\", "\\\\")
+        .replace('"', '\\"')
+        .replace("\r", "")
+        .replace("\n", "\\n")
+        .replace("\t", "\\t")
+    )
+    return f'"{s}"'
 
 
 def get_target_class_name(metadata):
@@ -325,24 +342,156 @@ def extract_signature(java_code, target_func_name, slug):
     return candidates[0] if candidates else None
 
 
-def format_print_statement(var_name, ret_type, example_num):
-    """Format a labeled System.out.println statement for the given return type."""
+def format_actual_expr(var_name, ret_type):
+    """Return a Java String expression representing the value of `var_name`."""
     ret_type = ret_type.strip()
-    prefix = f'"Example {example_num}: " + '
     if ret_type == "TreeNode":
-        expr = f"treeToString({var_name})"
-    elif ret_type == "ListNode":
-        expr = f"listToString({var_name})"
-    elif ret_type == "GraphNode":
-        expr = f"graphToString({var_name})"
-    elif ret_type.endswith("[][]"):
-        expr = f"Arrays.deepToString({var_name})"
-    elif ret_type.endswith("[]"):
-        expr = f"Arrays.toString({var_name})"
-    else:
-        expr = var_name
-    return f"System.out.println({prefix}{expr});"
+        return f"treeToString({var_name})"
+    if ret_type == "ListNode":
+        return f"listToString({var_name})"
+    if ret_type == "GraphNode":
+        return f"graphToString({var_name})"
+    if ret_type.endswith("[][]"):
+        return f"Arrays.deepToString({var_name})"
+    if ret_type.endswith("[]"):
+        return f"Arrays.toString({var_name})"
+    return f"String.valueOf({var_name})"
 
+
+def resolve_example_meta(test_case, example_idx, examples):
+    """
+    Resolve (input_str, expected_output, explanation) for `test_case`.
+    1. Checks `examples[example_idx]` first.
+    2. Searches all `examples` if `testCases` and `examples` are ordered differently.
+    3. Falls back to `examples[example_idx]` or synthesizes `input_str` from `test_case`.
+    """
+    fallback_input = ", ".join(f"{k} = {v}" for k, v in test_case.items()) if test_case else ""
+    if not isinstance(examples, list) or not examples:
+        return fallback_input, None, None
+
+    def _norm(s):
+        return re.sub(r"[\s\"']+", "", str(s))
+
+    def _matches(ex):
+        if not isinstance(ex, dict) or not test_case:
+            return False
+        ex_in = _norm(ex.get("input", ""))
+        if not ex_in:
+            return False
+        return all(_norm(v) in ex_in for v in test_case.values() if v is not None)
+
+    chosen = None
+    if example_idx < len(examples) and _matches(examples[example_idx]):
+        chosen = examples[example_idx]
+    else:
+        for ex in examples:
+            if _matches(ex):
+                chosen = ex
+                break
+        if chosen is None and example_idx < len(examples) and isinstance(examples[example_idx], dict):
+            chosen = examples[example_idx]
+
+    if not chosen:
+        return fallback_input, None, None
+
+    input_str = chosen.get("input") or fallback_input
+    expected_out = chosen.get("output")
+    if expected_out is not None:
+        expected_out = str(expected_out).strip()
+    explanation = chosen.get("explanation")
+    if explanation is not None:
+        explanation = str(explanation).strip() or None
+
+    return input_str, expected_out, explanation
+
+
+TEST_RUNNER_HELPERS = """
+    // --- Unit Test & Colored Output Helpers ---
+    private static int _totalTests = 0;
+    private static int _passedTests = 0;
+
+    private static final String RESET  = "\\033[0m";
+    private static final String BOLD   = "\\033[1m";
+    private static final String DIM    = "\\033[2m";
+    private static final String RED    = "\\033[0;31m";
+    private static final String GREEN  = "\\033[0;32m";
+    private static final String YELLOW = "\\033[1;33m";
+    private static final String CYAN   = "\\033[0;36m";
+
+    private static String normalizeOutput(String s) {
+        if (s == null) return "null";
+        String t = s.trim();
+        if (t.length() >= 2 && ((t.startsWith("\\"") && t.endsWith("\\"")) || (t.startsWith("'") && t.endsWith("'")))) {
+            t = t.substring(1, t.length() - 1);
+        }
+        if (t.startsWith("[") && t.endsWith("]")) {
+            return t.replaceAll("[\\\\s\\"]+", "");
+        }
+        return t;
+    }
+
+    private static boolean isMatch(String actual, String expected) {
+        if (actual == null || expected == null) return actual == expected;
+        if (actual.trim().equals(expected.trim())) return true;
+        String normActual = normalizeOutput(actual);
+        String normExpected = normalizeOutput(expected);
+        if (normActual.equals(normExpected)) return true;
+        if (normActual.equalsIgnoreCase(normExpected)
+                && (normActual.equalsIgnoreCase("true") || normActual.equalsIgnoreCase("false"))) {
+            return true;
+        }
+        try {
+            double dActual = Double.parseDouble(normActual);
+            double dExpected = Double.parseDouble(normExpected);
+            return Math.abs(dActual - dExpected) <= 1e-5;
+        } catch (NumberFormatException ignored) {
+        }
+        return false;
+    }
+
+    private static void verifyExample(int exampleNum, String actual, String expected, String input, String explanation) {
+        if (exampleNum > 1) System.out.println();
+        if (expected == null) {
+            System.out.println(BOLD + CYAN + "ℹ Example " + exampleNum + RESET);
+            if (input != null && !input.isEmpty()) {
+                System.out.println("  " + DIM + "Input  : " + RESET + input);
+            }
+            System.out.println("  " + BOLD + "Actual : " + RESET + CYAN + actual + RESET);
+            return;
+        }
+
+        _totalTests++;
+        boolean passed = isMatch(actual, expected);
+        if (passed) {
+            _passedTests++;
+            System.out.println(BOLD + GREEN + "✔ Example " + exampleNum + " PASSED" + RESET);
+            if (input != null && !input.isEmpty()) {
+                System.out.println("  " + DIM + "Input    : " + RESET + input);
+            }
+            System.out.println("  " + BOLD + "Actual   : " + RESET + GREEN + actual + RESET);
+            System.out.println("  " + DIM + "Expected : " + RESET + expected);
+        } else {
+            System.out.println(BOLD + RED + "✘ Example " + exampleNum + " FAILED" + RESET);
+            if (input != null && !input.isEmpty()) {
+                System.out.println("  " + DIM + "Input       : " + RESET + input);
+            }
+            System.out.println("  " + BOLD + "Actual      : " + RESET + RED + actual + RESET);
+            System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            if (explanation != null && !explanation.isEmpty()) {
+                System.out.println("  " + YELLOW + "💡 Explanation : " + RESET + explanation);
+            }
+        }
+    }
+
+    private static void printTestSummary() {
+        if (_totalTests == 0) return;
+        System.out.println("\\n" + DIM + "────────────────────────────────────────" + RESET);
+        if (_passedTests == _totalTests) {
+            System.out.println(BOLD + GREEN + "✔ All " + _passedTests + "/" + _totalTests + " example test(s) passed!" + RESET);
+        } else {
+            System.out.println(BOLD + RED + "✘ " + _passedTests + "/" + _totalTests + " example test(s) passed." + RESET);
+        }
+    }"""
 
 TREE_HELPERS = """
     private static TreeNode buildTree(Integer[] vals) {
@@ -510,6 +659,7 @@ def build_main_java(metadata, sol_code, marker_code, slug):
     uncommented_sol = strip_comments(sol_code)
     func_name = metadata.get("functionName", "")
     raw_test_cases = metadata.get("testCases", [])
+    raw_examples = metadata.get("examples", [])
 
     # Select up to the first 2 valid test cases
     selected_tests = (
@@ -572,6 +722,9 @@ def build_main_java(metadata, sol_code, marker_code, slug):
         ]
 
         for example_num, test_case in enumerate(selected_tests, start=1):
+            input_str, expected_out, explanation = resolve_example_meta(
+                test_case, example_num - 1, raw_examples
+            )
             if example_num > 1:
                 lines.append("")
             lines.append(f"        // --- Example {example_num} ---")
@@ -591,13 +744,24 @@ def build_main_java(metadata, sol_code, marker_code, slug):
                 args_joined = ", ".join(arg_names)
                 lines.append(f"            {enc_ret} _encoded = obj.{enc_name}({args_joined});")
                 lines.append(f"            {dec_ret} _result = obj.{dec_name}(_encoded);")
-                lines.append(f"            {format_print_statement('_result', dec_ret, example_num)}")
+                actual_expr = format_actual_expr("_result", dec_ret)
+                lines.append(
+                    f"            verifyExample({example_num}, {actual_expr}, "
+                    f"{escape_java_string(expected_out)}, {escape_java_string(input_str)}, "
+                    f"{escape_java_string(explanation)});"
+                )
             else:
-                lines.append(f'            System.out.println("Example {example_num}: " + obj);')
+                lines.append(
+                    f"            verifyExample({example_num}, String.valueOf(obj), "
+                    f"null, {escape_java_string(input_str)}, {escape_java_string(explanation)});"
+                )
 
             lines.append("        }")
 
+        lines.append("")
+        lines.append("        printTestSummary();")
         lines.append("    }")
+        lines.append(TEST_RUNNER_HELPERS)
         if needs_tree:
             lines.append(TREE_HELPERS)
         if needs_list:
@@ -646,6 +810,9 @@ def build_main_java(metadata, sol_code, marker_code, slug):
     ]
 
     for example_num, test_case in enumerate(selected_tests, start=1):
+        input_str, expected_out, explanation = resolve_example_meta(
+            test_case, example_num - 1, raw_examples
+        )
         if example_num > 1:
             lines.append("")
         lines.append(f"        // --- Example {example_num} ---")
@@ -676,14 +843,27 @@ def build_main_java(metadata, sol_code, marker_code, slug):
             lines.append(f"            {sol_var}.{method_name}({args_joined});")
             if params:
                 first_type, first_name = params[0]
-                lines.append(f"            {format_print_statement(first_name, first_type, example_num)}")
+                actual_expr = format_actual_expr(first_name, first_type)
+                lines.append(
+                    f"            verifyExample({example_num}, {actual_expr}, "
+                    f"{escape_java_string(expected_out)}, {escape_java_string(input_str)}, "
+                    f"{escape_java_string(explanation)});"
+                )
         else:
             lines.append(f"            {ret_type} {res_var} = {sol_var}.{method_name}({args_joined});")
-            lines.append(f"            {format_print_statement(res_var, ret_type, example_num)}")
+            actual_expr = format_actual_expr(res_var, ret_type)
+            lines.append(
+                f"            verifyExample({example_num}, {actual_expr}, "
+                f"{escape_java_string(expected_out)}, {escape_java_string(input_str)}, "
+                f"{escape_java_string(explanation)});"
+            )
 
         lines.append("        }")
 
+    lines.append("")
+    lines.append("        printTestSummary();")
     lines.append("    }")
+    lines.append(TEST_RUNNER_HELPERS)
 
     if needs_tree:
         lines.append(TREE_HELPERS)

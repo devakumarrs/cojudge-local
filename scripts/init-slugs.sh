@@ -5,6 +5,15 @@
 # Initializes and verifies the local Java environment across all CoJudge problem
 # folders under `problems/` in two strict phases:
 #
+#   Usage:
+#     ./scripts/init-slugs.sh [--reset-main | --force-main | -r | -f]
+#
+#   Options:
+#     --reset-main, --force-main, -r, -f
+#       Deletes and regenerates `Main.java` across all problem directories
+#       even if `Main.java` already exists. Solved `<ClassName>.java` files
+#       remain strictly read-only.
+#
 #   Target Class File Resolution:
 #     - Reads `classProblem.userClassName` from `metadata.json` (e.g., `Codec`,
 #       `WordDictionary`, `LRUCache`) and defaults to `Solution` if not found.
@@ -41,6 +50,27 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m' # Reset color
+
+# 0. Parse CLI arguments
+RESET_MAIN=false
+
+for arg in "$@"; do
+    case "$arg" in
+        --reset-main|--force-main|-r|-f)
+            RESET_MAIN=true
+            ;;
+        -h|--help)
+            echo -e "${BOLD}Usage:${NC} $0 [--reset-main | --force-main | -r | -f]"
+            echo -e "  --reset-main, --force-main, -r, -f   Delete and regenerate Main.java for all problems"
+            exit 0
+            ;;
+        *)
+            echo -e "${RED}✖ Error: Unknown argument '$arg'${NC}"
+            echo -e "Usage: $0 [--reset-main | --force-main | -r | -f]"
+            exit 1
+            ;;
+    esac
+done
 
 # Helper: Extract `classProblem.userClassName` from metadata.json, defaulting to "Solution"
 get_target_java_file() {
@@ -88,6 +118,9 @@ if [ ! -d "$PROBLEMS_DIR" ]; then
 fi
 
 echo -e "${CYAN}Initializing and verifying Java problem folders in $PROBLEMS_DIR...${NC}"
+if [ "$RESET_MAIN" = true ]; then
+    echo -e "${YELLOW}⚡ Force/Reset Main mode enabled: All Main.java files will be deleted and regenerated.${NC}"
+fi
 
 # 3. Initialize summary counters
 COUNT_TOTAL=0
@@ -121,10 +154,11 @@ while IFS= read -r slug; do
 
     echo -e " ${CYAN}✓$SOL_FILE (Solved)   :${NC}$slug"
 
-    if [ -f "$dir/Main.java" ]; then
+    if [ "$RESET_MAIN" = false ] && [ -f "$dir/Main.java" ]; then
         echo -e "   ${BLUE}↳ Main.java   (Exists)   :${NC}$slug/Main.java"
         ((COUNT_MAIN_EXISTING++))
     else
+        rm -f "$dir/Main.java"
         if ! python3 "$MAIN_GEN_SCRIPT" "$dir" --solved; then
             rm -f "$dir/Main.java"
             echo -e "\n${RED}✖ Halting init-slugs.sh in Phase 1: Solved problem '$slug' failed Main.java compilation.${NC}"
@@ -186,10 +220,11 @@ for dir in "$PROBLEMS_DIR"/*/; do
     fi
 
     # --- Part B: Main.java Generation & Java 21 Compilation Check ---
-    if [ -f "$dir/Main.java" ]; then
+    if [ "$RESET_MAIN" = false ] && [ -f "$dir/Main.java" ]; then
         echo -e "   ${BLUE}↳ Main.java   (Exists)   :${NC}$slug/Main.java"
         ((COUNT_MAIN_EXISTING++))
     else
+        rm -f "$dir/Main.java"
         if ! python3 "$MAIN_GEN_SCRIPT" "$dir"; then
             rm -f "$dir/Main.java"
             echo -e "\n${RED}✖ Halting init-slugs.sh in Phase 2 due to compilation/generation error in '$slug'.${NC}"
@@ -207,7 +242,7 @@ MINUTES=$((DURATION / 60))
 SECONDS_REMAINDER=$((DURATION % 60))
 
 if [ "$MINUTES" -gt 0 ]; then
-    TIME_STR="${MINUTES}m ${SECONDS_REMAINDER}s"
+    TIME_STR="${MINUTES}m${SECONDS_REMAINDER}s"
 else
     TIME_STR="${SECONDS_REMAINDER}s"
 fi
