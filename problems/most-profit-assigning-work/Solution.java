@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Solution {
     public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
         return 0;

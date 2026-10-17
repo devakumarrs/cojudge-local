@@ -1,5 +1,3 @@
-import java.util.*;
-
 public class Main {
     public static void main(String[] _cliArgs) {
         // --- Example 1 ---
@@ -8,7 +6,8 @@ public class Main {
             String[] operations = new String[]{"5", "2", "C", "D", "+"};
 
             int result = sol.calPoints(operations);
-            verifyExample(1, String.valueOf(result), "30", "operations = [\"5\",\"2\",\"C\",\"D\",\"+\"]", "\"5\" - Add 5 to the record, record is now [5]. \"2\" - Add 2 to the record, record is now [5, 2]. \"C\" - Invalidate and remove the previous score, record is now [5]. \"D\" - Add 2 * 5 = 10 to the record, record is now [5, 10]. \"+\" - Add 5 + 10 = 15 to the record, record is now [5, 10, 15]. The sum is 30.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"5", "2", "C", "D", "+"}, result));
+            verifyExample(1, correct, String.valueOf(result), "30", "operations = [\"5\",\"2\",\"C\",\"D\",\"+\"]", "\"5\" - Add 5 to the record, record is now [5]. \"2\" - Add 2 to the record, record is now [5, 2]. \"C\" - Invalidate and remove the previous score, record is now [5]. \"D\" - Add 2 * 5 = 10 to the record, record is now [5, 10]. \"+\" - Add 5 + 10 = 15 to the record, record is now [5, 10, 15]. The sum is 30.");
         }
 
         // --- Example 2 ---
@@ -17,7 +16,8 @@ public class Main {
             String[] operations = new String[]{"5", "-2", "4", "C", "D", "9", "+", "+"};
 
             int result = sol.calPoints(operations);
-            verifyExample(2, String.valueOf(result), "27", "operations = [\"5\",\"-2\",\"4\",\"C\",\"D\",\"9\",\"+\",\"+\"]", "\"5\" - Add 5, record is [5]. \"-2\" - Add -2, record is [5, -2]. \"4\" - Add 4, record is [5, -2, 4]. \"C\" - Remove 4, record is [5, -2]. \"D\" - Add 2 * -2 = -4, record is [5, -2, -4]. \"9\" - Add 9, record is [5, -2, -4, 9]. \"+\" - Add -4 + 9 = 5, record is [5, -2, -4, 9, 5]. \"+\" - Add 9 + 5 = 14, record is [5, -2, -4, 9, 5, 14]. The sum is 27.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"5", "-2", "4", "C", "D", "9", "+", "+"}, result));
+            verifyExample(2, correct, String.valueOf(result), "27", "operations = [\"5\",\"-2\",\"4\",\"C\",\"D\",\"9\",\"+\",\"+\"]", "\"5\" - Add 5, record is [5]. \"-2\" - Add -2, record is [5, -2]. \"4\" - Add 4, record is [5, -2, 4]. \"C\" - Remove 4, record is [5, -2]. \"D\" - Add 2 * -2 = -4, record is [5, -2, -4]. \"9\" - Add 9, record is [5, -2, -4, 9]. \"+\" - Add -4 + 9 = 5, record is [5, -2, -4, 9, 5]. \"+\" - Add 9 + 5 = 14, record is [5, -2, -4, 9, 5, 14]. The sum is 27.");
         }
 
         printTestSummary();
@@ -66,9 +66,20 @@ public class Main {
         return false;
     }
 
-    private static void verifyExample(int exampleNum, String actual, String expected, String input, String explanation) {
+    // Runs the problem's own judge (`Marker.isCorrect`); a crashing checker counts as a failure
+    private static boolean runChecker(java.util.function.BooleanSupplier checker) {
+        try {
+            return checker.getAsBoolean();
+        } catch (RuntimeException e) {
+            System.out.println(YELLOW + "⚠ Marker.isCorrect threw " + e + RESET);
+            return false;
+        }
+    }
+
+    // `correct` is the checker's verdict, or null to compare `actual` against `expected` as text
+    private static void verifyExample(int exampleNum, Boolean correct, String actual, String expected, String input, String explanation) {
         if (exampleNum > 1) System.out.println();
-        if (expected == null) {
+        if (correct == null && expected == null) {
             System.out.println(BOLD + CYAN + "ℹ Example " + exampleNum + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input  : " + RESET + input);
@@ -78,7 +89,7 @@ public class Main {
         }
 
         _totalTests++;
-        boolean passed = isMatch(actual, expected);
+        boolean passed = correct != null ? correct : isMatch(actual, expected);
         if (passed) {
             _passedTests++;
             System.out.println(BOLD + GREEN + "✔ Example " + exampleNum + " PASSED" + RESET);
@@ -86,14 +97,18 @@ public class Main {
                 System.out.println("  " + DIM + "Input    : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual   : " + RESET + GREEN + actual + RESET);
-            System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            if (expected != null) {
+                System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            }
         } else {
             System.out.println(BOLD + RED + "✘ Example " + exampleNum + " FAILED" + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input       : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual      : " + RESET + RED + actual + RESET);
-            System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            if (expected != null) {
+                System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            }
             if (explanation != null && !explanation.isEmpty()) {
                 System.out.println("  " + YELLOW + "💡 Explanation : " + RESET + explanation);
             }

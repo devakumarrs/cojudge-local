@@ -9,7 +9,8 @@ public class Main {
             int key = 3;
 
             TreeNode result = sol.deleteNode(root, key);
-            verifyExample(1, treeToString(result), "[5,4,6,2,null,null,7]", "root = [5,3,6,2,4,null,7], key = 3", "One valid result after deleting 3.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(buildTree(new Integer[]{5, 3, 6, 2, 4, null, 7}), 3, result));
+            verifyExample(1, correct, treeToString(result), "[5,4,6,2,null,null,7]", "root = [5,3,6,2,4,null,7], key = 3", "One valid result after deleting 3.");
         }
 
         // --- Example 2 ---
@@ -19,7 +20,8 @@ public class Main {
             int key = 0;
 
             TreeNode result = sol.deleteNode(root, key);
-            verifyExample(2, treeToString(result), "[5,3,6,2,4,null,7]", "root = [5,3,6,2,4,null,7], key = 0", null);
+            boolean correct = runChecker(() -> new Marker().isCorrect(buildTree(new Integer[]{5, 3, 6, 2, 4, null, 7}), 0, result));
+            verifyExample(2, correct, treeToString(result), "[5,3,6,2,4,null,7]", "root = [5,3,6,2,4,null,7], key = 0", null);
         }
 
         printTestSummary();
@@ -68,9 +70,20 @@ public class Main {
         return false;
     }
 
-    private static void verifyExample(int exampleNum, String actual, String expected, String input, String explanation) {
+    // Runs the problem's own judge (`Marker.isCorrect`); a crashing checker counts as a failure
+    private static boolean runChecker(java.util.function.BooleanSupplier checker) {
+        try {
+            return checker.getAsBoolean();
+        } catch (RuntimeException e) {
+            System.out.println(YELLOW + "⚠ Marker.isCorrect threw " + e + RESET);
+            return false;
+        }
+    }
+
+    // `correct` is the checker's verdict, or null to compare `actual` against `expected` as text
+    private static void verifyExample(int exampleNum, Boolean correct, String actual, String expected, String input, String explanation) {
         if (exampleNum > 1) System.out.println();
-        if (expected == null) {
+        if (correct == null && expected == null) {
             System.out.println(BOLD + CYAN + "ℹ Example " + exampleNum + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input  : " + RESET + input);
@@ -80,7 +93,7 @@ public class Main {
         }
 
         _totalTests++;
-        boolean passed = isMatch(actual, expected);
+        boolean passed = correct != null ? correct : isMatch(actual, expected);
         if (passed) {
             _passedTests++;
             System.out.println(BOLD + GREEN + "✔ Example " + exampleNum + " PASSED" + RESET);
@@ -88,14 +101,18 @@ public class Main {
                 System.out.println("  " + DIM + "Input    : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual   : " + RESET + GREEN + actual + RESET);
-            System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            if (expected != null) {
+                System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            }
         } else {
             System.out.println(BOLD + RED + "✘ Example " + exampleNum + " FAILED" + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input       : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual      : " + RESET + RED + actual + RESET);
-            System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            if (expected != null) {
+                System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            }
             if (explanation != null && !explanation.isEmpty()) {
                 System.out.println("  " + YELLOW + "💡 Explanation : " + RESET + explanation);
             }

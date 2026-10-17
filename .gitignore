@@ -3,3 +3,21 @@
 
 # Compiled bytecode
 *.class
+
+# Python bytecode cache
+__pycache__/
+
+# CoJudge-seeded problem content (owned by CoJudge / original problem authors).
+# Kept on disk for local use, never published.
+problems/*/statement.md
+problems/*/solution.md
+problems/*/official-tests.json
+problems/*/metadata.json
+problems/*/Marker.java
+problems/*/explanation*.png
+problems/*/example*.png
+problems/*/tc[0-9]*.png
+.cojudge-seed.json
+
+# CoJudge browser backups
+backups/

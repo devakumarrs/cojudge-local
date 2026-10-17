@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Solution {
     public int maxCount(int m, int n, int[][] ops) {
         return 0;

@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Solution {
     public String decodeAtIndex(String s, int k) {
         return null;

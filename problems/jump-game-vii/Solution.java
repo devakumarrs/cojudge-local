@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Solution {
     public boolean canReach(String s, int minJump, int maxJump) {
         return false;

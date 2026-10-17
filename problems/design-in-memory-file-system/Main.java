@@ -10,7 +10,8 @@ public class Main {
             String[] contents = new String[]{"", "", "", "hello", "", ""};
 
             List<List<String>> result = sol.runFileSystem(operations, paths, contents);
-            verifyExample(1, String.valueOf(result), "[[\"a\"],[\"hello\"],[\"d\"]]", "operations = [\"FileSystem\",\"mkdir\",\"ls\",\"addContentToFile\",\"readContentFromFile\",\"ls\"], paths = [\"/\",\"/a/b/c\",\"/\",\"/a/b/c/d\",\"/a/b/c/d\",\"/a/b/c\"], contents = [\"\",\"\",\"\",\"hello\",\"\",\"\"]", "Listing root shows a; reading the file gives hello; listing its folder shows d.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"FileSystem", "mkdir", "ls", "addContentToFile", "readContentFromFile", "ls"}, new String[]{"/", "/a/b/c", "/", "/a/b/c/d", "/a/b/c/d", "/a/b/c"}, new String[]{"", "", "", "hello", "", ""}, result));
+            verifyExample(1, correct, String.valueOf(result), "[[\"a\"],[\"hello\"],[\"d\"]]", "operations = [\"FileSystem\",\"mkdir\",\"ls\",\"addContentToFile\",\"readContentFromFile\",\"ls\"], paths = [\"/\",\"/a/b/c\",\"/\",\"/a/b/c/d\",\"/a/b/c/d\",\"/a/b/c\"], contents = [\"\",\"\",\"\",\"hello\",\"\",\"\"]", "Listing root shows a; reading the file gives hello; listing its folder shows d.");
         }
 
         // --- Example 2 ---
@@ -21,7 +22,8 @@ public class Main {
             String[] contents = new String[]{"", "", "", "data", "", ""};
 
             List<List<String>> result = sol.runFileSystem(operations, paths, contents);
-            verifyExample(2, String.valueOf(result), "[[\"x\"],[\"f\"],[\"data\"]]", "operations = [\"FileSystem\",\"mkdir\",\"ls\",\"addContentToFile\",\"ls\",\"readContentFromFile\"], paths = [\"/\",\"/x/y\",\"/\",\"/x/y/f\",\"/x/y\",\"/x/y/f\"], contents = [\"\",\"\",\"\",\"data\",\"\",\"\"]", "Root holds x; the folder holds f; the file holds data.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"FileSystem", "mkdir", "ls", "addContentToFile", "ls", "readContentFromFile"}, new String[]{"/", "/x/y", "/", "/x/y/f", "/x/y", "/x/y/f"}, new String[]{"", "", "", "data", "", ""}, result));
+            verifyExample(2, correct, String.valueOf(result), "[[\"x\"],[\"f\"],[\"data\"]]", "operations = [\"FileSystem\",\"mkdir\",\"ls\",\"addContentToFile\",\"ls\",\"readContentFromFile\"], paths = [\"/\",\"/x/y\",\"/\",\"/x/y/f\",\"/x/y\",\"/x/y/f\"], contents = [\"\",\"\",\"\",\"data\",\"\",\"\"]", "Root holds x; the folder holds f; the file holds data.");
         }
 
         printTestSummary();
@@ -70,9 +72,20 @@ public class Main {
         return false;
     }
 
-    private static void verifyExample(int exampleNum, String actual, String expected, String input, String explanation) {
+    // Runs the problem's own judge (`Marker.isCorrect`); a crashing checker counts as a failure
+    private static boolean runChecker(java.util.function.BooleanSupplier checker) {
+        try {
+            return checker.getAsBoolean();
+        } catch (RuntimeException e) {
+            System.out.println(YELLOW + "⚠ Marker.isCorrect threw " + e + RESET);
+            return false;
+        }
+    }
+
+    // `correct` is the checker's verdict, or null to compare `actual` against `expected` as text
+    private static void verifyExample(int exampleNum, Boolean correct, String actual, String expected, String input, String explanation) {
         if (exampleNum > 1) System.out.println();
-        if (expected == null) {
+        if (correct == null && expected == null) {
             System.out.println(BOLD + CYAN + "ℹ Example " + exampleNum + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input  : " + RESET + input);
@@ -82,7 +95,7 @@ public class Main {
         }
 
         _totalTests++;
-        boolean passed = isMatch(actual, expected);
+        boolean passed = correct != null ? correct : isMatch(actual, expected);
         if (passed) {
             _passedTests++;
             System.out.println(BOLD + GREEN + "✔ Example " + exampleNum + " PASSED" + RESET);
@@ -90,14 +103,18 @@ public class Main {
                 System.out.println("  " + DIM + "Input    : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual   : " + RESET + GREEN + actual + RESET);
-            System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            if (expected != null) {
+                System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            }
         } else {
             System.out.println(BOLD + RED + "✘ Example " + exampleNum + " FAILED" + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input       : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual      : " + RESET + RED + actual + RESET);
-            System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            if (expected != null) {
+                System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            }
             if (explanation != null && !explanation.isEmpty()) {
                 System.out.println("  " + YELLOW + "💡 Explanation : " + RESET + explanation);
             }

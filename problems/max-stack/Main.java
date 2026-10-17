@@ -9,7 +9,8 @@ public class Main {
             int[] values = new int[]{5, 1, 5, 0, 0, 0, 0, 0, 0};
 
             int[] result = sol.runMaxStack(operations, values);
-            verifyExample(1, Arrays.toString(result), "[5,5,1,5,1,5]", "operations = [\"push\",\"push\",\"push\",\"top\",\"popMax\",\"top\",\"peekMax\",\"pop\",\"top\"], values = [5,1,5,0,0,0,0,0,0]", "Pushes 5,1,5. Top is 5; popMax removes the upper 5; top is 1; peekMax is 5; pop removes 1; top is 5.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"push", "push", "push", "top", "popMax", "top", "peekMax", "pop", "top"}, new int[]{5, 1, 5, 0, 0, 0, 0, 0, 0}, result));
+            verifyExample(1, correct, Arrays.toString(result), "[5,5,1,5,1,5]", "operations = [\"push\",\"push\",\"push\",\"top\",\"popMax\",\"top\",\"peekMax\",\"pop\",\"top\"], values = [5,1,5,0,0,0,0,0,0]", "Pushes 5,1,5. Top is 5; popMax removes the upper 5; top is 1; peekMax is 5; pop removes 1; top is 5.");
         }
 
         // --- Example 2 ---
@@ -19,7 +20,8 @@ public class Main {
             int[] values = new int[]{2, 7, 0, 0, 0};
 
             int[] result = sol.runMaxStack(operations, values);
-            verifyExample(2, Arrays.toString(result), "[7,7,2]", "operations = [\"push\",\"push\",\"peekMax\",\"pop\",\"peekMax\"], values = [2,7,0,0,0]", "Push 2 then 7; max is 7; pop removes 7; max becomes 2.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"push", "push", "peekMax", "pop", "peekMax"}, new int[]{2, 7, 0, 0, 0}, result));
+            verifyExample(2, correct, Arrays.toString(result), "[7,7,2]", "operations = [\"push\",\"push\",\"peekMax\",\"pop\",\"peekMax\"], values = [2,7,0,0,0]", "Push 2 then 7; max is 7; pop removes 7; max becomes 2.");
         }
 
         printTestSummary();
@@ -68,9 +70,20 @@ public class Main {
         return false;
     }
 
-    private static void verifyExample(int exampleNum, String actual, String expected, String input, String explanation) {
+    // Runs the problem's own judge (`Marker.isCorrect`); a crashing checker counts as a failure
+    private static boolean runChecker(java.util.function.BooleanSupplier checker) {
+        try {
+            return checker.getAsBoolean();
+        } catch (RuntimeException e) {
+            System.out.println(YELLOW + "⚠ Marker.isCorrect threw " + e + RESET);
+            return false;
+        }
+    }
+
+    // `correct` is the checker's verdict, or null to compare `actual` against `expected` as text
+    private static void verifyExample(int exampleNum, Boolean correct, String actual, String expected, String input, String explanation) {
         if (exampleNum > 1) System.out.println();
-        if (expected == null) {
+        if (correct == null && expected == null) {
             System.out.println(BOLD + CYAN + "ℹ Example " + exampleNum + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input  : " + RESET + input);
@@ -80,7 +93,7 @@ public class Main {
         }
 
         _totalTests++;
-        boolean passed = isMatch(actual, expected);
+        boolean passed = correct != null ? correct : isMatch(actual, expected);
         if (passed) {
             _passedTests++;
             System.out.println(BOLD + GREEN + "✔ Example " + exampleNum + " PASSED" + RESET);
@@ -88,14 +101,18 @@ public class Main {
                 System.out.println("  " + DIM + "Input    : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual   : " + RESET + GREEN + actual + RESET);
-            System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            if (expected != null) {
+                System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            }
         } else {
             System.out.println(BOLD + RED + "✘ Example " + exampleNum + " FAILED" + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input       : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual      : " + RESET + RED + actual + RESET);
-            System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            if (expected != null) {
+                System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            }
             if (explanation != null && !explanation.isEmpty()) {
                 System.out.println("  " + YELLOW + "💡 Explanation : " + RESET + explanation);
             }

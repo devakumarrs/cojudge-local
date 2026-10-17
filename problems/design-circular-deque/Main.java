@@ -9,7 +9,8 @@ public class Main {
             int[] values = new int[]{3, 1, 2, 3, 4, 0, 0, 0, 4, 0};
 
             int[] result = sol.runCircularDeque(operations, values);
-            verifyExample(1, Arrays.toString(result), "[1,1,1,0,2,1,1,1,4]", "operations = [\"MyCircularDeque\",\"insertLast\",\"insertLast\",\"insertFront\",\"insertFront\",\"getRear\",\"isFull\",\"deleteLast\",\"insertFront\",\"getFront\"], values = [3,1,2,3,4,0,0,0,4,0]", "Capacity 3 fills with [3,1,2]; the second insertFront fails; rear is 2 and the deque is full; after deleting the rear, inserting 4 at the front gives [4,3,1].");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"MyCircularDeque", "insertLast", "insertLast", "insertFront", "insertFront", "getRear", "isFull", "deleteLast", "insertFront", "getFront"}, new int[]{3, 1, 2, 3, 4, 0, 0, 0, 4, 0}, result));
+            verifyExample(1, correct, Arrays.toString(result), "[1,1,1,0,2,1,1,1,4]", "operations = [\"MyCircularDeque\",\"insertLast\",\"insertLast\",\"insertFront\",\"insertFront\",\"getRear\",\"isFull\",\"deleteLast\",\"insertFront\",\"getFront\"], values = [3,1,2,3,4,0,0,0,4,0]", "Capacity 3 fills with [3,1,2]; the second insertFront fails; rear is 2 and the deque is full; after deleting the rear, inserting 4 at the front gives [4,3,1].");
         }
 
         // --- Example 2 ---
@@ -19,7 +20,8 @@ public class Main {
             int[] values = new int[]{2, 0, 0, 0, 9, 0, 0, 0};
 
             int[] result = sol.runCircularDeque(operations, values);
-            verifyExample(2, Arrays.toString(result), "[-1,-1,1,1,0,1,1]", "operations = [\"MyCircularDeque\",\"getFront\",\"getRear\",\"isEmpty\",\"insertFront\",\"isFull\",\"deleteFront\",\"isEmpty\"], values = [2,0,0,0,9,0,0,0]", "An empty deque reads -1 at both ends; after inserting 9 it is neither full nor empty.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"MyCircularDeque", "getFront", "getRear", "isEmpty", "insertFront", "isFull", "deleteFront", "isEmpty"}, new int[]{2, 0, 0, 0, 9, 0, 0, 0}, result));
+            verifyExample(2, correct, Arrays.toString(result), "[-1,-1,1,1,0,1,1]", "operations = [\"MyCircularDeque\",\"getFront\",\"getRear\",\"isEmpty\",\"insertFront\",\"isFull\",\"deleteFront\",\"isEmpty\"], values = [2,0,0,0,9,0,0,0]", "An empty deque reads -1 at both ends; after inserting 9 it is neither full nor empty.");
         }
 
         printTestSummary();
@@ -68,9 +70,20 @@ public class Main {
         return false;
     }
 
-    private static void verifyExample(int exampleNum, String actual, String expected, String input, String explanation) {
+    // Runs the problem's own judge (`Marker.isCorrect`); a crashing checker counts as a failure
+    private static boolean runChecker(java.util.function.BooleanSupplier checker) {
+        try {
+            return checker.getAsBoolean();
+        } catch (RuntimeException e) {
+            System.out.println(YELLOW + "⚠ Marker.isCorrect threw " + e + RESET);
+            return false;
+        }
+    }
+
+    // `correct` is the checker's verdict, or null to compare `actual` against `expected` as text
+    private static void verifyExample(int exampleNum, Boolean correct, String actual, String expected, String input, String explanation) {
         if (exampleNum > 1) System.out.println();
-        if (expected == null) {
+        if (correct == null && expected == null) {
             System.out.println(BOLD + CYAN + "ℹ Example " + exampleNum + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input  : " + RESET + input);
@@ -80,7 +93,7 @@ public class Main {
         }
 
         _totalTests++;
-        boolean passed = isMatch(actual, expected);
+        boolean passed = correct != null ? correct : isMatch(actual, expected);
         if (passed) {
             _passedTests++;
             System.out.println(BOLD + GREEN + "✔ Example " + exampleNum + " PASSED" + RESET);
@@ -88,14 +101,18 @@ public class Main {
                 System.out.println("  " + DIM + "Input    : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual   : " + RESET + GREEN + actual + RESET);
-            System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            if (expected != null) {
+                System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            }
         } else {
             System.out.println(BOLD + RED + "✘ Example " + exampleNum + " FAILED" + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input       : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual      : " + RESET + RED + actual + RESET);
-            System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            if (expected != null) {
+                System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            }
             if (explanation != null && !explanation.isEmpty()) {
                 System.out.println("  " + YELLOW + "💡 Explanation : " + RESET + explanation);
             }

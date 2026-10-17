@@ -9,7 +9,8 @@ public class Main {
             int[] postorder = new int[]{9, 15, 7, 20, 3};
 
             TreeNode result = sol.buildTree(inorder, postorder);
-            verifyExample(1, treeToString(result), "[3,9,20,null,null,15,7]", "inorder = [9,3,15,20,7], postorder = [9,15,7,20,3]", "The last postorder entry (3) is the root; it splits inorder into left [9] and right [15,20,7], then recursion finishes both sides.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{9, 3, 15, 20, 7}, new int[]{9, 15, 7, 20, 3}, result));
+            verifyExample(1, correct, treeToString(result), "[3,9,20,null,null,15,7]", "inorder = [9,3,15,20,7], postorder = [9,15,7,20,3]", "The last postorder entry (3) is the root; it splits inorder into left [9] and right [15,20,7], then recursion finishes both sides.");
         }
 
         // --- Example 2 ---
@@ -19,7 +20,8 @@ public class Main {
             int[] postorder = new int[]{-1};
 
             TreeNode result = sol.buildTree(inorder, postorder);
-            verifyExample(2, treeToString(result), "[-1]", "inorder = [-1], postorder = [-1]", "A single entry in both walks describes a lone node.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{-1}, new int[]{-1}, result));
+            verifyExample(2, correct, treeToString(result), "[-1]", "inorder = [-1], postorder = [-1]", "A single entry in both walks describes a lone node.");
         }
 
         printTestSummary();
@@ -68,9 +70,20 @@ public class Main {
         return false;
     }
 
-    private static void verifyExample(int exampleNum, String actual, String expected, String input, String explanation) {
+    // Runs the problem's own judge (`Marker.isCorrect`); a crashing checker counts as a failure
+    private static boolean runChecker(java.util.function.BooleanSupplier checker) {
+        try {
+            return checker.getAsBoolean();
+        } catch (RuntimeException e) {
+            System.out.println(YELLOW + "⚠ Marker.isCorrect threw " + e + RESET);
+            return false;
+        }
+    }
+
+    // `correct` is the checker's verdict, or null to compare `actual` against `expected` as text
+    private static void verifyExample(int exampleNum, Boolean correct, String actual, String expected, String input, String explanation) {
         if (exampleNum > 1) System.out.println();
-        if (expected == null) {
+        if (correct == null && expected == null) {
             System.out.println(BOLD + CYAN + "ℹ Example " + exampleNum + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input  : " + RESET + input);
@@ -80,7 +93,7 @@ public class Main {
         }
 
         _totalTests++;
-        boolean passed = isMatch(actual, expected);
+        boolean passed = correct != null ? correct : isMatch(actual, expected);
         if (passed) {
             _passedTests++;
             System.out.println(BOLD + GREEN + "✔ Example " + exampleNum + " PASSED" + RESET);
@@ -88,14 +101,18 @@ public class Main {
                 System.out.println("  " + DIM + "Input    : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual   : " + RESET + GREEN + actual + RESET);
-            System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            if (expected != null) {
+                System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            }
         } else {
             System.out.println(BOLD + RED + "✘ Example " + exampleNum + " FAILED" + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input       : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual      : " + RESET + RED + actual + RESET);
-            System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            if (expected != null) {
+                System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            }
             if (explanation != null && !explanation.isEmpty()) {
                 System.out.println("  " + YELLOW + "💡 Explanation : " + RESET + explanation);
             }

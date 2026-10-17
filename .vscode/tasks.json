@@ -12,9 +12,25 @@
                 "cwd": "${fileDirname}"
             },
             "group": "build",
+            "problemMatcher": [],
             "presentation": {
                 "reveal": "silent",
                 "panel": "shared"
+            }
+        },
+        {
+            "label": "commit-problem",
+            "type": "process",
+            "command": "${workspaceFolder}/scripts/bash/commit-problem.sh",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "clear": true
             }
         }
     ]

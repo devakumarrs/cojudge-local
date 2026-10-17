@@ -10,7 +10,8 @@ public class Main {
             int right = 4;
 
             ListNode result = sol.reverseBetween(head, left, right);
-            verifyExample(1, listToString(result), "[1,4,3,2,5]", "head = [1,2,3,4,5], left = 2, right = 4", "Reverse positions 2 through 4: [2,3,4] becomes [4,3,2].");
+            boolean correct = runChecker(() -> new Marker().isCorrect(buildList(new int[]{1, 2, 3, 4, 5}), 2, 4, result));
+            verifyExample(1, correct, listToString(result), "[1,4,3,2,5]", "head = [1,2,3,4,5], left = 2, right = 4", "Reverse positions 2 through 4: [2,3,4] becomes [4,3,2].");
         }
 
         // --- Example 2 ---
@@ -21,7 +22,8 @@ public class Main {
             int right = 1;
 
             ListNode result = sol.reverseBetween(head, left, right);
-            verifyExample(2, listToString(result), "[5]", "head = [5], left = 1, right = 1", "A single node reversed in place stays [5].");
+            boolean correct = runChecker(() -> new Marker().isCorrect(buildList(new int[]{5}), 1, 1, result));
+            verifyExample(2, correct, listToString(result), "[5]", "head = [5], left = 1, right = 1", "A single node reversed in place stays [5].");
         }
 
         printTestSummary();
@@ -70,9 +72,20 @@ public class Main {
         return false;
     }
 
-    private static void verifyExample(int exampleNum, String actual, String expected, String input, String explanation) {
+    // Runs the problem's own judge (`Marker.isCorrect`); a crashing checker counts as a failure
+    private static boolean runChecker(java.util.function.BooleanSupplier checker) {
+        try {
+            return checker.getAsBoolean();
+        } catch (RuntimeException e) {
+            System.out.println(YELLOW + "⚠ Marker.isCorrect threw " + e + RESET);
+            return false;
+        }
+    }
+
+    // `correct` is the checker's verdict, or null to compare `actual` against `expected` as text
+    private static void verifyExample(int exampleNum, Boolean correct, String actual, String expected, String input, String explanation) {
         if (exampleNum > 1) System.out.println();
-        if (expected == null) {
+        if (correct == null && expected == null) {
             System.out.println(BOLD + CYAN + "ℹ Example " + exampleNum + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input  : " + RESET + input);
@@ -82,7 +95,7 @@ public class Main {
         }
 
         _totalTests++;
-        boolean passed = isMatch(actual, expected);
+        boolean passed = correct != null ? correct : isMatch(actual, expected);
         if (passed) {
             _passedTests++;
             System.out.println(BOLD + GREEN + "✔ Example " + exampleNum + " PASSED" + RESET);
@@ -90,14 +103,18 @@ public class Main {
                 System.out.println("  " + DIM + "Input    : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual   : " + RESET + GREEN + actual + RESET);
-            System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            if (expected != null) {
+                System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            }
         } else {
             System.out.println(BOLD + RED + "✘ Example " + exampleNum + " FAILED" + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input       : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual      : " + RESET + RED + actual + RESET);
-            System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            if (expected != null) {
+                System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            }
             if (explanation != null && !explanation.isEmpty()) {
                 System.out.println("  " + YELLOW + "💡 Explanation : " + RESET + explanation);
             }

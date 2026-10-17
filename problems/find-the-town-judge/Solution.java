@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Solution {
     public int findJudge(int n, int[][] trust) {
         return 0;

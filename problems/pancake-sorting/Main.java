@@ -8,7 +8,8 @@ public class Main {
             int[] arr = new int[]{3, 2, 4, 1};
 
             List<Integer> result = sol.pancakeSort(arr);
-            verifyExample(1, String.valueOf(result), "[4,2,4,3]", "arr = [3,2,4,1]", "Flipping 4, then 2, then 4, then 3 sorts the array: [4,2,4,3] is one valid answer (any sorting sequence is accepted).");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{3, 2, 4, 1}, result));
+            verifyExample(1, correct, String.valueOf(result), "[4,2,4,3]", "arr = [3,2,4,1]", "Flipping 4, then 2, then 4, then 3 sorts the array: [4,2,4,3] is one valid answer (any sorting sequence is accepted).");
         }
 
         // --- Example 2 ---
@@ -17,7 +18,8 @@ public class Main {
             int[] arr = new int[]{3, 2, 1};
 
             List<Integer> result = sol.pancakeSort(arr);
-            verifyExample(2, String.valueOf(result), "[]", "arr = [3,2,1]", "A single flip of the whole array reverses it into order, so [3] suffices.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{3, 2, 1}, result));
+            verifyExample(2, correct, String.valueOf(result), "[]", "arr = [3,2,1]", "A single flip of the whole array reverses it into order, so [3] suffices.");
         }
 
         printTestSummary();
@@ -66,9 +68,20 @@ public class Main {
         return false;
     }
 
-    private static void verifyExample(int exampleNum, String actual, String expected, String input, String explanation) {
+    // Runs the problem's own judge (`Marker.isCorrect`); a crashing checker counts as a failure
+    private static boolean runChecker(java.util.function.BooleanSupplier checker) {
+        try {
+            return checker.getAsBoolean();
+        } catch (RuntimeException e) {
+            System.out.println(YELLOW + "⚠ Marker.isCorrect threw " + e + RESET);
+            return false;
+        }
+    }
+
+    // `correct` is the checker's verdict, or null to compare `actual` against `expected` as text
+    private static void verifyExample(int exampleNum, Boolean correct, String actual, String expected, String input, String explanation) {
         if (exampleNum > 1) System.out.println();
-        if (expected == null) {
+        if (correct == null && expected == null) {
             System.out.println(BOLD + CYAN + "ℹ Example " + exampleNum + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input  : " + RESET + input);
@@ -78,7 +91,7 @@ public class Main {
         }
 
         _totalTests++;
-        boolean passed = isMatch(actual, expected);
+        boolean passed = correct != null ? correct : isMatch(actual, expected);
         if (passed) {
             _passedTests++;
             System.out.println(BOLD + GREEN + "✔ Example " + exampleNum + " PASSED" + RESET);
@@ -86,14 +99,18 @@ public class Main {
                 System.out.println("  " + DIM + "Input    : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual   : " + RESET + GREEN + actual + RESET);
-            System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            if (expected != null) {
+                System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            }
         } else {
             System.out.println(BOLD + RED + "✘ Example " + exampleNum + " FAILED" + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input       : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual      : " + RESET + RED + actual + RESET);
-            System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            if (expected != null) {
+                System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            }
             if (explanation != null && !explanation.isEmpty()) {
                 System.out.println("  " + YELLOW + "💡 Explanation : " + RESET + explanation);
             }

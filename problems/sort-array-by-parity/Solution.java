@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Solution {
     public int[] sortArrayByParity(int[] nums) {
         return new int[0];

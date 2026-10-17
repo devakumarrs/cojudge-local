@@ -10,7 +10,8 @@ public class Main {
             List<List<String>> similarPairs = new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList("great", "good")), new ArrayList<>(Arrays.asList("fine", "good")), new ArrayList<>(Arrays.asList("drama", "acting")), new ArrayList<>(Arrays.asList("skills", "talent"))));
 
             boolean result = sol.areSentencesSimilarTwo(sentence1, sentence2, similarPairs);
-            verifyExample(1, String.valueOf(result), "true", "sentence1 = [\"great\",\"acting\",\"skills\"], sentence2 = [\"fine\",\"drama\",\"talent\"], similarPairs = [[\"great\",\"good\"],[\"fine\",\"good\"],[\"drama\",\"acting\"],[\"skills\",\"talent\"]]", "great reaches fine via good; the other positions match directly.");
+            boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"great", "acting", "skills"}, new String[]{"fine", "drama", "talent"}, new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList("great", "good")), new ArrayList<>(Arrays.asList("fine", "good")), new ArrayList<>(Arrays.asList("drama", "acting")), new ArrayList<>(Arrays.asList("skills", "talent")))), result));
+            verifyExample(1, correct, String.valueOf(result), "true", "sentence1 = [\"great\",\"acting\",\"skills\"], sentence2 = [\"fine\",\"drama\",\"talent\"], similarPairs = [[\"great\",\"good\"],[\"fine\",\"good\"],[\"drama\",\"acting\"],[\"skills\",\"talent\"]]", "great reaches fine via good; the other positions match directly.");
         }
 
         // --- Example 2 ---
@@ -21,7 +22,8 @@ public class Main {
             List<List<String>> similarPairs = new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList("great", "good"))));
 
             boolean result = sol.areSentencesSimilarTwo(sentence1, sentence2, similarPairs);
-            verifyExample(2, String.valueOf(result), "false", "sentence1 = [\"great\"], sentence2 = [\"fine\"], similarPairs = [[\"great\",\"good\"]]", null);
+            boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"great"}, new String[]{"fine"}, new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList("great", "good")))), result));
+            verifyExample(2, correct, String.valueOf(result), "false", "sentence1 = [\"great\"], sentence2 = [\"fine\"], similarPairs = [[\"great\",\"good\"]]", null);
         }
 
         printTestSummary();
@@ -70,9 +72,20 @@ public class Main {
         return false;
     }
 
-    private static void verifyExample(int exampleNum, String actual, String expected, String input, String explanation) {
+    // Runs the problem's own judge (`Marker.isCorrect`); a crashing checker counts as a failure
+    private static boolean runChecker(java.util.function.BooleanSupplier checker) {
+        try {
+            return checker.getAsBoolean();
+        } catch (RuntimeException e) {
+            System.out.println(YELLOW + "⚠ Marker.isCorrect threw " + e + RESET);
+            return false;
+        }
+    }
+
+    // `correct` is the checker's verdict, or null to compare `actual` against `expected` as text
+    private static void verifyExample(int exampleNum, Boolean correct, String actual, String expected, String input, String explanation) {
         if (exampleNum > 1) System.out.println();
-        if (expected == null) {
+        if (correct == null && expected == null) {
             System.out.println(BOLD + CYAN + "ℹ Example " + exampleNum + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input  : " + RESET + input);
@@ -82,7 +95,7 @@ public class Main {
         }
 
         _totalTests++;
-        boolean passed = isMatch(actual, expected);
+        boolean passed = correct != null ? correct : isMatch(actual, expected);
         if (passed) {
             _passedTests++;
             System.out.println(BOLD + GREEN + "✔ Example " + exampleNum + " PASSED" + RESET);
@@ -90,14 +103,18 @@ public class Main {
                 System.out.println("  " + DIM + "Input    : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual   : " + RESET + GREEN + actual + RESET);
-            System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            if (expected != null) {
+                System.out.println("  " + DIM + "Expected : " + RESET + expected);
+            }
         } else {
             System.out.println(BOLD + RED + "✘ Example " + exampleNum + " FAILED" + RESET);
             if (input != null && !input.isEmpty()) {
                 System.out.println("  " + DIM + "Input       : " + RESET + input);
             }
             System.out.println("  " + BOLD + "Actual      : " + RESET + RED + actual + RESET);
-            System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            if (expected != null) {
+                System.out.println("  " + BOLD + "Expected    : " + RESET + GREEN + expected + RESET);
+            }
             if (explanation != null && !explanation.isEmpty()) {
                 System.out.println("  " + YELLOW + "💡 Explanation : " + RESET + explanation);
             }

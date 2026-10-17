@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Solution {
     public int maxEnvelopes(int[][] envelopes) {
         return 0;

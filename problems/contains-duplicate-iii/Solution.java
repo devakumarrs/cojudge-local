@@ -1,5 +1,3 @@
-import java.util.*;
-
 class Solution {
     public boolean containsNearbyAlmostDuplicate(int[] nums, int indexDiff, int valueDiff) {
         return false;
