@@ -5,9 +5,11 @@
 # Invoked automatically by VSCode's preLaunchTask before starting a debug session.
 #
 # Responsibilities:
-#   1. Dynamically scopes the VSCode Java Language Server (`java.project.sourcePaths`)
-#      to the active problem directory (`problems/<slug>`) so classes like
-#      `Solution`, `Main`, `Codec`, `TreeNode`, and `ListNode` never collide.
+#   1. Regenerates `.vscode/settings.json` from the tracked `settings.base.json`
+#      and dynamically scopes the VSCode Java Language Server
+#      (`java.project.sourcePaths`) to the active problem directory
+#      (`problems/<slug>`) so classes like `Solution`, `Main`, `Codec`,
+#      `TreeNode`, and `ListNode` never collide.
 #   2. Avoids redundant disk writes to `.vscode/settings.json` if the active
 #      problem folder hasn't changed, preventing unnecessary language server reloads.
 #   3. Compiles `Main.java` and the problem class (`Solution.java` or
@@ -23,16 +25,22 @@ set -e
 RELATIVE_DIR="$1"
 VSCODE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SETTINGS_FILE="$VSCODE_DIR/settings.json"
+BASE_SETTINGS_FILE="$VSCODE_DIR/settings.base.json"
 
-# 1. Update .vscode/settings.json if the active file is inside a problem directory
+# 1. Update .vscode/settings.json (base settings + active problem source path)
+#    if the active file is inside a problem directory
 if [[ "$RELATIVE_DIR" == problems/* ]]; then
-    EXPECTED=$(cat <<EOF
-{
-    "java.project.sourcePaths": [
-        "$RELATIVE_DIR"
-    ]
-}
-EOF
+    EXPECTED=$(python3 - "$BASE_SETTINGS_FILE" "$RELATIVE_DIR" <<'PY'
+import json, os, sys
+
+base_path, source_dir = sys.argv[1], sys.argv[2]
+settings = {}
+if os.path.exists(base_path):
+    with open(base_path, encoding="utf-8") as f:
+        settings = json.load(f)
+settings["java.project.sourcePaths"] = [source_dir]
+print(json.dumps(settings, indent=4, ensure_ascii=False))
+PY
 )
     CURRENT=$(cat "$SETTINGS_FILE" 2>/dev/null || true)
     if [[ "$CURRENT" != "$EXPECTED" ]]; then

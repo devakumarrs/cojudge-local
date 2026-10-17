@@ -1,0 +1,41 @@
+{
+    "workbench.colorTheme": "Visual Studio Light",
+    "diffEditor.ignoreTrimWhitespace": true,
+    "diffEditor.renderSideBySide": false,
+    "git.autofetch": true,
+    "redhat.telemetry.enabled": false,
+    "editor.fontSize": 22,
+    "editor.quickSuggestions": {
+        "other": false,
+        "comments": false,
+        "strings": false
+    },
+    "editor.inlineSuggest.enabled": false,
+    "editor.suggestOnTriggerCharacters": false,
+    "editor.wordBasedSuggestions": "off",
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.hover.enabled": "off",
+    "editor.parameterHints.enabled": false,
+    "editor.inlayHints.enabled": "off",
+    "terminal.integrated.initialHint": false,
+    "problems.decorations.enabled": false,
+    "workbench.colorCustomizations": {
+        "editorError.foreground": "#00000000",
+        "editorWarning.foreground": "#00000000",
+        "editorInfo.foreground": "#00000000"
+    },
+    "editor.autoClosingBrackets": "never",
+    "editor.autoClosingQuotes": "never",
+    "editor.autoSurround": "never",
+    "editor.bracketPairColorization.enabled": false,
+    "editor.matchBrackets": "never",
+    "java.jdt.ls.java.home": "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home",
+    "[java]": {
+        "editor.defaultFormatter": "redhat.java",
+        "editor.formatOnSave": true
+    },
+    "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml",
+    "java.format.settings.profile": "GoogleStyle",
+    "java.format.comments.enabled": false,
+    "claudeCode.preferredLocation": "panel"
+}
