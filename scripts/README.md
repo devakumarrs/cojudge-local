@@ -17,10 +17,12 @@ are checked on the round trip; other design problems only print their input.
 When stepping through, step **over** `runChecker(...)`: `Marker.java`
 contains the reference solution.
 
-## ctrl+shift+c: commit a problem
+## ctrl+shift+c: commit and push a problem
 
-`bash/commit-problem.sh` commits every pending change, provided all of it is
-inside one `problems/<slug>/` folder, and refuses otherwise.
+`bash/ship-problem.sh` commits every pending change, provided all of it is
+inside one `problems/<slug>/` folder, and refuses otherwise. After committing
+it pushes to `origin main`; if the push fails, the commit stays local and the
+script exits with an error, so run `git push origin main` yourself once it's fixed.
 
 A problem counts as **solved** once some commit touched only its folder
 (`bash/list-solved-problems.sh` lists them). The first such commit is named
@@ -52,5 +54,6 @@ Imports you need inside your methods are yours to add.
 | F5: *"settings.base.json is not valid JSON"* | Remove comments / trailing commas. |
 | F5: `javac` errors | Your code doesn't compile; see the task terminal. |
 | ctrl+shift+c refuses | Changes outside one problem folder are pending; commit those by hand. |
+| ctrl+shift+c: *"pushing to origin/main failed"* | The commit is saved locally. Fix the push error (network, auth, remote ahead), then `git push origin main`. |
 | `init-slugs.sh`: *"no 'cojudge' command or alias"* | Install CoJudge or add its alias to your shell profile. |
 | `Main.java` breaks after a CoJudge update | `./scripts/bash/init-slugs.sh -f <slug>` |

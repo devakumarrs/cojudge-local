@@ -7,7 +7,7 @@ with a small Java + VS Code workflow on top:
   test runner for every problem.
 - **F5** debugs the open problem against its examples, judged by the
   problem's own checker (`Marker.isCorrect`).
-- **ctrl+shift+c** commits one problem at a time, so git history doubles as
+- **ctrl+shift+c** commits and pushes one problem at a time, so git history doubles as
   a record of what's solved (`<slug>`) and reworked (`improve: <slug>`).
 
 [CoJudge](https://github.com/cojudge/cojudge) is an offline, LeetCode-style judge (web UI + `cojudge` CLI, ~1000
@@ -46,7 +46,7 @@ itself is unchanged.
    from the Command Palette and add this entry inside the `[...]`
    ([docs](https://code.visualstudio.com/docs/configure/keybindings)):
    ```json
-   { "key": "ctrl+shift+c", "command": "workbench.action.tasks.runTask", "args": "commit-problem" }
+   { "key": "ctrl+shift+c", "command": "workbench.action.tasks.runTask", "args": "ship-problem" }
    ```
 
 ## Daily loop
@@ -59,7 +59,7 @@ itself is unchanged.
    ```
    or in the web UI: `cojudge` starts the server and opens
    http://localhost:5375, where you paste your code and submit.
-4. **ctrl+shift+c** commits that problem.
+4. **ctrl+shift+c** commits that problem and pushes it.
 
 The editor is deliberately bare (no autocomplete, hovers or squiggles).
 Change that in `.vscode/settings.base.json`, never in the generated
@@ -78,6 +78,6 @@ git add problems courses && git commit -m "Cojudge automatic updates"
 - **Resetting a problem in CoJudge deletes your solution** (Manage Problems
   → reset, or `cojudge sync --reset`). Commit first; `git restore
   problems/<slug>` recovers it.
-- `commit-problem.sh` only accepts changes inside a single problem folder.
+- `ship-problem.sh` only accepts changes inside a single problem folder.
 
 More detail: [`scripts/README.md`](scripts/README.md).

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==============================================================================
-# commit-problem.sh
+# ship-problem.sh
 # ------------------------------------------------------------------------------
 # Safely stages and commits all changed files (staged, unstaged, or untracked,
 # such as `Solution.java`, `Main.java`, or your own notes) belonging to a single
@@ -18,9 +18,12 @@
 #   - Subsequent single-folder commits        : "improve: <slug>"
 #   ("Already solved" is decided by `list-solved-problems.sh`.)
 #
+# After committing, pushes to `origin main`. If the push fails, the commit
+# stays local and the script exits with an error.
+#
 # Usage:
-#   ./scripts/bash/commit-problem.sh
-#   (or press ctrl+shift+c in VS Code, which runs the `commit-problem` task)
+#   ./scripts/bash/ship-problem.sh
+#   (or press ctrl+shift+c in VS Code, which runs the `ship-problem` task)
 # ==============================================================================
 
 set -e
@@ -103,3 +106,12 @@ if [[ "$COMMIT_MSG" == improve:* ]]; then
 else
     echo -e " ↳ ${BOLD}Message : ${NC}$COMMIT_MSG\n"
 fi
+
+# 8. Push to origin/main. Only reached when every step above succeeded.
+if ! git push origin main; then
+    echo -e "\n${RED}✖ Error: The commit was created locally, but pushing to origin/main failed.${NC}"
+    echo -e "${RED}  Fix the problem above, then run ${CYAN}git push origin main${RED}.${NC}"
+    exit 1
+fi
+
+echo -e "\n${GREEN}✅ Pushed to origin/main.${NC}\n"

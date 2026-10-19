@@ -19,9 +19,9 @@
             }
         },
         {
-            "label": "commit-problem",
+            "label": "ship-problem",
             "type": "process",
-            "command": "${workspaceFolder}/scripts/bash/commit-problem.sh",
+            "command": "${workspaceFolder}/scripts/bash/ship-problem.sh",
             "options": {
                 "cwd": "${workspaceFolder}"
             },

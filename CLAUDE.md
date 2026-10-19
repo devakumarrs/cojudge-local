@@ -33,8 +33,8 @@ notes, `scripts/`, `.vscode/` and the READMEs are published.
   through `scripts/bash/compile-problem.sh` (Java 21, debug info), not Python.
 - `init-slugs.sh` flags: only `-f` / `--force-main` (regenerate `Main.java`).
   A full `-f` run takes about 6 minutes, so pass slugs when you can.
-- `commit-problem.sh` (ctrl+shift+c) commits any number of files, but they must
-  all be inside one `problems/<slug>/` folder.
+- `ship-problem.sh` (ctrl+shift+c) commits any number of files, but they must
+  all be inside one `problems/<slug>/` folder. It then pushes to `origin main`.
 - Generated `Main.java` checks examples with the problem's `Marker.isCorrect`, so
   answers in any order (e.g. `subsets`) pass the same way they do in CoJudge.
 
