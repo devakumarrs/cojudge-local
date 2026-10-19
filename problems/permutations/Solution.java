@@ -4,22 +4,27 @@ class Solution {
 
     public int[][] permute(int[] nums) {
         List<int[]> results = new ArrayList<>();
-        Set<Integer> set = new LinkedHashSet<>();
-        permute(nums, set, results);
+        permute(nums, 0, results);
         return results.toArray(new int[0][]);
     }
 
-    private void permute(int[] nums, Set<Integer> set, List<int[]> results) {
-        if (set.size() == nums.length) {
-            results.add(set.stream().mapToInt(Integer::intValue).toArray());
+    private void permute(int[] nums, int start, List<int[]> results) {
+        if (start == nums.length) {
+            int[] arr = new int[nums.length];
+            System.arraycopy(nums, 0, arr, 0, nums.length);
+            results.add(arr);
             return;
         }
-        for (int i = 0; i < nums.length; i++) {
-            if (!set.contains(nums[i])) {
-                set.add(nums[i]);
-                permute(nums, set, results);
-                set.remove(nums[i]);
-            }
+        for (int i = start; i < nums.length; i++) {
+            swap(nums, i, start);
+            permute(nums, start + 1, results);
+            swap(nums, i, start);
         }
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
 }
