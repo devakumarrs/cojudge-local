@@ -10,33 +10,26 @@ class TreeNode {
     TreeNode(int val, TreeNode left, TreeNode right) { this.val = val; this.left = left; this.right = right; }
 }
 */
-import java.util.*;
 
 class Solution {
     private record Pair(int max, int childMax) {
+        static final Pair EMPTY = new Pair(0, 0);
     }
 
     public int rob(TreeNode root) {
-        if (root == null)
-            return 0;
-        Map<TreeNode, Pair> map = new HashMap<>();
-        var pair = rob(root, map);
+        var pair = robHelper(root);
         return pair.max;
     }
 
-    private Pair rob(TreeNode root, Map<TreeNode, Pair> map) {
+    private Pair robHelper(TreeNode root) {
         if (root == null) {
-            return new Pair(0, 0);
+            return Pair.EMPTY;
         }
-        if (map.containsKey(root)) {
-            return map.get(root);
-        }
-        var leftPair = rob(root.left, map);
-        var rightPair = rob(root.right, map);
+        var leftPair = robHelper(root.left);
+        var rightPair = robHelper(root.right);
 
         int childMax = leftPair.max + rightPair.max;
         int max = Math.max(childMax, root.val + leftPair.childMax + rightPair.childMax);
-        map.put(root, new Pair(max, childMax));
-        return map.get(root);
+        return new Pair(max, childMax);
     }
 }
