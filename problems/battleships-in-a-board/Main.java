@@ -17,7 +17,7 @@ public class Main {
 
             int result = sol.countBattleships(board);
             boolean correct = runChecker(() -> new Marker().isCorrect(new char[][]{new char[]{'X', '.'}, new char[]{'.', 'X'}}, result));
-            verifyExample(2, correct, String.valueOf(result), "0", "board = [[\".\"]]", "No X cells means no ships.");
+            verifyExample(2, correct, String.valueOf(result), null, "board = [[\"X\",\".\"],[\".\",\"X\"]]", null);
         }
 
         printTestSummary();

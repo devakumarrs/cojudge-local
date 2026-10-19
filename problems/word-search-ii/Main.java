@@ -10,7 +10,7 @@ public class Main {
 
             List<String> result = sol.findWords(board, words);
             boolean correct = runChecker(() -> new Marker().isCorrect(new char[][]{new char[]{'o', 'a', 'a', 'n'}, new char[]{'e', 't', 'a', 'e'}, new char[]{'i', 'h', 'k', 'r'}, new char[]{'i', 'f', 'l', 'v'}}, new String[]{"oath", "pea", "eat", "rain"}, result));
-            verifyExample(1, correct, String.valueOf(result), "[see,abcced]", "board = [[a,b,c,e],[s,f,c,s],[a,d,e,e]], words = [see,abcced,abcb]", "\"see\" is found via s(1,3)->e(2,3)->e(2,2). \"abcced\" is found via a(0,0)->b(0,1)->c(0,2)->c(1,2)->e(2,2)->d(2,1). \"abcb\" has no valid path.");
+            verifyExample(1, correct, String.valueOf(result), null, "board = [['o', 'a', 'a', 'n'], ['e', 't', 'a', 'e'], ['i', 'h', 'k', 'r'], ['i', 'f', 'l', 'v']], words = ['oath', 'pea', 'eat', 'rain']", null);
         }
 
         // --- Example 2 ---

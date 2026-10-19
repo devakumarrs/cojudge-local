@@ -9,7 +9,7 @@ public class Main {
 
             int[] result = sol.countBits(n);
             boolean correct = runChecker(() -> new Marker().isCorrect(0, result));
-            verifyExample(1, correct, Arrays.toString(result), "[0,1,1]", "n = 2", "For numbers 0 through 2, the counts of 1-bits in their binary representations are [0, 1, 1].");
+            verifyExample(1, correct, Arrays.toString(result), null, "n = 0", null);
         }
 
         // --- Example 2 ---
@@ -19,7 +19,7 @@ public class Main {
 
             int[] result = sol.countBits(n);
             boolean correct = runChecker(() -> new Marker().isCorrect(1, result));
-            verifyExample(2, correct, Arrays.toString(result), "[0,1,1,2,1,2]", "n = 5", "For numbers 0 through 5, the counts of 1-bits in their binary representations are [0, 1, 1, 2, 1, 2].");
+            verifyExample(2, correct, Arrays.toString(result), null, "n = 1", null);
         }
 
         printTestSummary();

@@ -32,7 +32,8 @@ def resolve_example_meta(test_case, example_idx, examples):
     Resolve (input_str, expected_output, explanation) for `test_case`.
     1. Checks `examples[example_idx]` first.
     2. Searches all `examples` if `testCases` and `examples` are ordered differently.
-    3. Falls back to `examples[example_idx]` or synthesizes `input_str` from `test_case`.
+    3. Otherwise synthesizes `input_str` from `test_case`, with no expected output or
+       explanation (an unmatched example describes a different case).
     """
     fallback_input = ", ".join(f"{k} = {v}" for k, v in test_case.items()) if test_case else ""
     if not isinstance(examples, list) or not examples:
@@ -43,8 +44,6 @@ def resolve_example_meta(test_case, example_idx, examples):
         chosen = indexed
     else:
         chosen = next((ex for ex in examples if _example_matches(ex, test_case)), None)
-        if chosen is None and isinstance(indexed, dict):
-            chosen = indexed
 
     if not chosen:
         return fallback_input, None, None

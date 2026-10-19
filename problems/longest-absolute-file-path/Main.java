@@ -7,7 +7,7 @@ public class Main {
 
             int result = sol.lengthLongestPath(input);
             boolean correct = runChecker(() -> new Marker().isCorrect("dir|	subdir1|	subdir2|		file.ext", result));
-            verifyExample(1, correct, String.valueOf(result), "20", "input = \"dir\\n\\tsubdir1\\n\\tsubdir2\\n\\t\\tfile.ext\"", "The file lives at \"dir/subdir2/file.ext\", length 20.");
+            verifyExample(1, correct, String.valueOf(result), null, "input = dir|\tsubdir1|\tsubdir2|\t\tfile.ext", null);
         }
 
         // --- Example 2 ---
@@ -17,7 +17,7 @@ public class Main {
 
             int result = sol.lengthLongestPath(input);
             boolean correct = runChecker(() -> new Marker().isCorrect("dir|	subdir1|		file1.ext|		subsubdir1|	subdir2|		subsubdir2|			file2.ext", result));
-            verifyExample(2, correct, String.valueOf(result), "32", "input = \"dir\\n\\tsubdir1\\n\\t\\tfile1.ext\\n\\t\\tsubsubdir1\\n\\tsubdir2\\n\\t\\tsubsubdir2\\n\\t\\t\\tfile2.ext\"", "Two files exist; the longer path \"dir/subdir2/subsubdir2/file2.ext\" has 32 chars.");
+            verifyExample(2, correct, String.valueOf(result), null, "input = dir|\tsubdir1|\t\tfile1.ext|\t\tsubsubdir1|\tsubdir2|\t\tsubsubdir2|\t\t\tfile2.ext", null);
         }
 
         printTestSummary();

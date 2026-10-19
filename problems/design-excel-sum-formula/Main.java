@@ -10,7 +10,7 @@ public class Main {
 
             int[] result = sol.runExcel(operations, args);
             boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"Excel", "set", "get", "sum", "get"}, new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList("3", "3")), new ArrayList<>(Arrays.asList("1", "1", "2")), new ArrayList<>(Arrays.asList("1", "1")), new ArrayList<>(Arrays.asList("1", "2", "A1", "A2")), new ArrayList<>(Arrays.asList("1", "2")))), result));
-            verifyExample(1, correct, Arrays.toString(result), "[2,4]", "operations = [\"Excel\",\"set\",\"get\",\"sum\",\"get\"], args = [[[\"3\",\"3\"]],[\"1\",\"1\",\"2\"],[\"1\",\"1\"],[\"1\",\"2\",\"A1\",\"A2\"],[\"1\",\"2\"]]", "Build a 3x3 sheet; set A1 to 2; get A1 is 2; sum A1+A2 into B1 gives 4 (A2 is 0); get B1 is 4.");
+            verifyExample(1, correct, Arrays.toString(result), null, "operations = [\"Excel\",\"set\",\"get\",\"sum\",\"get\"], args = [[\"3\",\"3\"],[\"1\",\"1\",\"2\"],[\"1\",\"1\"],[\"1\",\"2\",\"A1\",\"A2\"],[\"1\",\"2\"]]", null);
         }
 
         // --- Example 2 ---
@@ -21,7 +21,7 @@ public class Main {
 
             int[] result = sol.runExcel(operations, args);
             boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"Excel", "set", "set", "sum", "get"}, new ArrayList<>(Arrays.asList(new ArrayList<>(Arrays.asList("2", "2")), new ArrayList<>(Arrays.asList("1", "1", "5")), new ArrayList<>(Arrays.asList("1", "2", "7")), new ArrayList<>(Arrays.asList("2", "1", "A1", "B1")), new ArrayList<>(Arrays.asList("2", "1")))), result));
-            verifyExample(2, correct, Arrays.toString(result), "[12]", "operations = [\"Excel\",\"set\",\"set\",\"sum\",\"get\"], args = [[[\"2\",\"2\"]],[\"1\",\"1\",\"5\"],[\"1\",\"2\",\"7\"],[\"2\",\"1\",\"A1\",\"B1\"],[\"2\",\"1\"]]", "A1=5 and B1=7, so the formula A1+B1 stored at A2 evaluates to 12.");
+            verifyExample(2, correct, Arrays.toString(result), null, "operations = [\"Excel\",\"set\",\"set\",\"sum\",\"get\"], args = [[\"2\",\"2\"],[\"1\",\"1\",\"5\"],[\"1\",\"2\",\"7\"],[\"2\",\"1\",\"A1\",\"B1\"],[\"2\",\"1\"]]", null);
         }
 
         printTestSummary();

@@ -19,7 +19,7 @@ public class Main {
 
             int result = sol.getSum(a, b);
             boolean correct = runChecker(() -> new Marker().isCorrect(-1, 1, result));
-            verifyExample(2, correct, String.valueOf(result), "5", "a = 2, b = 3", "2 + 3 = 5.");
+            verifyExample(2, correct, String.valueOf(result), null, "a = -1, b = 1", null);
         }
 
         printTestSummary();

@@ -19,7 +19,7 @@ public class Main {
 
             int result = sol.bagOfTokensScore(tokens, power);
             boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{200, 100}, 150, result));
-            verifyExample(2, correct, String.valueOf(result), "2", "tokens = [100,200,300,400], power = 200", "Two cheap wins peak the score at 2.");
+            verifyExample(2, correct, String.valueOf(result), null, "tokens = [200, 100], power = 150", null);
         }
 
         printTestSummary();

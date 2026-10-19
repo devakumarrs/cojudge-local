@@ -10,7 +10,7 @@ public class Main {
 
             int[] result = sol.numberOfLines(widths, s);
             boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, "abcdefghijklmnopqrstuvwxyz", result));
-            verifyExample(1, correct, Arrays.toString(result), "[3,60]", "widths = [10 x 26], s = \"abcdefghijklmnopqrstuvwxyz\"", "Two full lines plus 60 units.");
+            verifyExample(1, correct, Arrays.toString(result), null, "widths = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], s = abcdefghijklmnopqrstuvwxyz", null);
         }
 
         // --- Example 2 ---
@@ -21,7 +21,7 @@ public class Main {
 
             int[] result = sol.numberOfLines(widths, s);
             boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{4, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10}, "bbbcccdddaaa", result));
-            verifyExample(2, correct, Arrays.toString(result), "[2,4]", "widths = [4,10 x 25], s = \"bbbcccdddaaa\"", "Overflow creates a second line of width 4.");
+            verifyExample(2, correct, Arrays.toString(result), null, "widths = [4, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10], s = bbbcccdddaaa", null);
         }
 
         printTestSummary();

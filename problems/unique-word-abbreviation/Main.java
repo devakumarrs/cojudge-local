@@ -10,7 +10,7 @@ public class Main {
 
             int[] result = sol.checkAbbr(dictionary, words);
             boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"deer", "door", "cake", "card"}, new String[]{"dear", "cart", "cane", "make", "cake"}, result));
-            verifyExample(1, correct, Arrays.toString(result), "[0,1,0]", "dictionary = [\"deer\",\"door\",\"cake\",\"card\"], words = [\"dear\",\"cart\",\"cane\"]", "dear shares d2r with deer/door (0); cart has fresh c2t (1); cane shares c2e with cake (0).");
+            verifyExample(1, correct, Arrays.toString(result), null, "dictionary = [\"deer\",\"door\",\"cake\",\"card\"], words = [\"dear\",\"cart\",\"cane\",\"make\",\"cake\"]", null);
         }
 
         // --- Example 2 ---

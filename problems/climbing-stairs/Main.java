@@ -7,7 +7,7 @@ public class Main {
 
             int result = sol.climbStairs(n);
             boolean correct = runChecker(() -> new Marker().isCorrect(1, result));
-            verifyExample(1, correct, String.valueOf(result), "2", "n = 2", "There are 2 ways: 1 step + 1 step, or 2 steps.");
+            verifyExample(1, correct, String.valueOf(result), null, "n = 1", null);
         }
 
         // --- Example 2 ---

@@ -21,7 +21,7 @@ public class Main {
 
             TreeNode result = sol.buildTree(preorder, inorder);
             boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{1, 2}, new int[]{2, 1}, result));
-            verifyExample(2, correct, treeToString(result), "[-1]", "preorder = [-1], inorder = [-1]", "The first element of preorder (-1) is the root. It splits inorder into left ([]) and right ([]) subtrees. Repeating recursively builds the tree [-1].");
+            verifyExample(2, correct, treeToString(result), null, "preorder = [1,2], inorder = [2,1]", null);
         }
 
         printTestSummary();

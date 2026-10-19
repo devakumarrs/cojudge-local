@@ -19,7 +19,7 @@ public class Main {
 
             List<String> result = sol.solveSudoku(board);
             boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"5.4.7.9.2", ".7.1.5.4.", "1.8.4.5.7", ".5.7.1.2.", "4.6.5.7.1", ".1.9.4.5.", "9.1.3.2.4", ".8.4.9.3.", "3.5.8.1.9"}, result));
-            verifyExample(2, correct, String.valueOf(result), "[\"534678912\",\"672195348\",\"198342567\",\"859761423\",\"426853791\",\"713924856\",\"961537284\",\"287419635\",\"345286179\"]", "board = [\"5.4.7.9.2\",\"6.2.9.3.8\",\"1.8.4.5.7\",\"8.9.6.4.3\",\"4.6.5.7.1\",\"7.3.2.8.6\",\"9.1.3.2.4\",\"2.7.1.6.5\",\"3.5.8.1.9\"]", "With every other cell blanked, the givens still determine the same full solution.");
+            verifyExample(2, correct, String.valueOf(result), null, "board = [\"5.4.7.9.2\", \".7.1.5.4.\", \"1.8.4.5.7\", \".5.7.1.2.\", \"4.6.5.7.1\", \".1.9.4.5.\", \"9.1.3.2.4\", \".8.4.9.3.\", \"3.5.8.1.9\"]", null);
         }
 
         printTestSummary();
