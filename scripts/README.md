@@ -9,6 +9,7 @@ How the three workflows in the [root README](../README.md) work.
 | Scope the Java language server to the open problem, so ~1000 `Solution` classes don't clash | `.vscode/prepare-problem.sh` → `py/merge-vscode-settings.py` writes `.vscode/settings.json` |
 | Compile the folder with debug info | `bash/compile-problem.sh` |
 | Run the folder's `Main` | `.vscode/launch.json` |
+| Delete the `.class` files when the session ends | `clean-problem` task in `.vscode/tasks.json` |
 
 `Main.java` runs up to 2 examples from `metadata.json` and prints PASS/FAIL,
 judged by `Marker.isCorrect` like CoJudge does. Codec-style design problems

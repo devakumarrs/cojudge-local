@@ -10,7 +10,8 @@
             "classPaths": [
                 "${fileDirname}"
             ],
-            "preLaunchTask": "prepare-problem"
+            "preLaunchTask": "prepare-problem",
+            "postDebugTask": "clean-problem"
         }
     ]
 }

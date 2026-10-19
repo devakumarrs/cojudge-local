@@ -20,6 +20,20 @@
             }
         },
         {
+            "label": "clean-problem",
+            "type": "shell",
+            "command": "rm -f -- *.class",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "silent",
+                "panel": "shared",
+                "close": true
+            }
+        },
+        {
             "label": "ship-problem",
             "type": "process",
             "command": "${workspaceFolder}/scripts/bash/ship-problem.sh",

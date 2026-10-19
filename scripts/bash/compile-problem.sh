@@ -8,7 +8,8 @@
 # and debug symbols (`-g`).
 #
 # Used by:
-#   - `.vscode/prepare-problem.sh` before a debug session (keeps `.class` files).
+#   - `.vscode/prepare-problem.sh` before a debug session (keeps `.class` files;
+#     the `clean-problem` postDebugTask deletes them).
 #   - `init-slugs.sh` to verify a generated `Main.java` (`--clean`).
 #
 # Usage:
