@@ -6,7 +6,7 @@
             "name": "Debug Current Problem",
             "request": "launch",
             "mainClass": "Main",
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "classPaths": [
                 "${fileDirname}"
             ],
