@@ -8,7 +8,7 @@ public class Main {
 
             int result = sol.findInMountainArray(arr, target);
             boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{1, 2, 3, 4, 5, 3, 1}, 3, result));
-            verifyExample(1, correct, String.valueOf(result), "2", "arr = [1,2,3,4,5,3,1], target = 3", "3 occurs at indices 2 and 5; the minimum index is 2.");
+            verifyExample(1, correct, String.valueOf(result), "2", "mountainArr = [1,2,3,4,5,3,1], target = 3", "3 occurs at indices 2 and 5; the minimum index is 2.");
         }
 
         // --- Example 2 ---
@@ -19,7 +19,7 @@ public class Main {
 
             int result = sol.findInMountainArray(arr, target);
             boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{0, 1, 2, 4, 2, 1}, 3, result));
-            verifyExample(2, correct, String.valueOf(result), "-1", "arr = [0,1,2,4,2,1], target = 3", "3 does not occur in the array.");
+            verifyExample(2, correct, String.valueOf(result), "-1", "mountainArr = [0,1,2,4,2,1], target = 3", "3 does not occur in the array.");
         }
 
         printTestSummary();

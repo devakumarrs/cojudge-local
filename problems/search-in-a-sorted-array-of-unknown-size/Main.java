@@ -8,7 +8,7 @@ public class Main {
 
             int result = sol.search(arr, target);
             boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{-1, 0, 3, 5, 9, 12}, 9, result));
-            verifyExample(1, correct, String.valueOf(result), "4", "arr = [-1,0,3,5,9,12], target = 9", "9 at index 4.");
+            verifyExample(1, correct, String.valueOf(result), "4", "secret = [-1,0,3,5,9,12], target = 9", "9 at index 4.");
         }
 
         // --- Example 2 ---
@@ -19,7 +19,7 @@ public class Main {
 
             int result = sol.search(arr, target);
             boolean correct = runChecker(() -> new Marker().isCorrect(new int[]{-1, 0, 3, 5, 9, 12}, 2, result));
-            verifyExample(2, correct, String.valueOf(result), "-1", "arr = [-1,0,3,5,9,12], target = 2", "2 absent.");
+            verifyExample(2, correct, String.valueOf(result), "-1", "secret = [-1,0,3,5,9,12], target = 2", "2 absent.");
         }
 
         printTestSummary();

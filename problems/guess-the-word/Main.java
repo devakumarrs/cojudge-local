@@ -8,7 +8,7 @@ public class Main {
 
             String result = sol.runGuess(wordlist, secret);
             boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"acckzz", "ccbazz", "eiowzz", "abcczz"}, "acckzz", result));
-            verifyExample(1, correct, String.valueOf(result), "\"acckzz\"", "wordlist = [\"acckzz\",\"ccbazz\",\"eiowzz\",\"abcczz\"], secret = \"acckzz\"", "Hidden word is the first entry.");
+            verifyExample(1, correct, String.valueOf(result), "solved", "wordlist = [\"acckzz\",\"ccbazz\",\"eiowzz\",\"abcczz\"], secret = \"acckzz\"", "Hidden word is the first entry; guess it via master.guess within 10 calls.");
         }
 
         // --- Example 2 ---
@@ -19,7 +19,7 @@ public class Main {
 
             String result = sol.runGuess(wordlist, secret);
             boolean correct = runChecker(() -> new Marker().isCorrect(new String[]{"hamada", "khaled"}, "khaled", result));
-            verifyExample(2, correct, String.valueOf(result), "\"khaled\"", "wordlist = [\"hamada\",\"khaled\"], secret = \"khaled\"", "Filtering leaves the secret.");
+            verifyExample(2, correct, String.valueOf(result), "solved", "wordlist = [\"hamada\",\"khaled\"], secret = \"khaled\"", "Filtering by match scores leaves the secret; guess it via the judge.");
         }
 
         printTestSummary();
