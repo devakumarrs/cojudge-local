@@ -6,19 +6,24 @@ class Solution {
         for (int num : nums) {
             map.put(num, map.getOrDefault(num, 0) + 1);
         }
-        Queue<int[]> q = new PriorityQueue<>((a, b) -> a[1] - b[1]);
+        int n = nums.length;
+        List<List<Integer>> freq = new ArrayList<>(n);
+        for (int i = 0; i < n; i++) {
+            freq.add(new ArrayList<>());
+        }
         for (var entry : map.entrySet()) {
-            int[] arr = new int[] { entry.getKey(), entry.getValue() };
-            if (q.size() < k) {
-                q.offer(arr);
-            } else if (q.peek()[1] < arr[1]) {
-                q.poll();
-                q.offer(arr);
-            }
+            freq.get(entry.getValue() - 1).add(entry.getKey());
         }
         int[] result = new int[k];
-        for (int i = 0; i < k; i++) {
-            result[i] = q.poll()[0];
+        for (int i = n - 1; i >= 0; i--) {
+            int j = 0;
+            while (k > 0 && j < freq.get(i).size()) {
+                result[k - 1] = freq.get(i).get(j);
+                k--;
+                j++;
+            }
+            if (k == 0)
+                break;
         }
         return result;
     }
