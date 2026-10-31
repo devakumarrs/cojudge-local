@@ -29,7 +29,7 @@
     "editor.autoSurround": "never",
     "editor.bracketPairColorization.enabled": false,
     "editor.matchBrackets": "never",
-    "java.jdt.ls.java.home": "/Library/Java/JavaVirtualMachines/openjdk.jdk/Contents/Home",
+    "java.jdt.ls.java.home": "$HOME/.sdkman/candidates/java/current",
     "[java]": {
         "editor.defaultFormatter": "redhat.java",
         "editor.formatOnSave": true
