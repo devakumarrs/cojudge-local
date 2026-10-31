@@ -24,6 +24,7 @@ contains the reference solution.
 inside one `problems/<slug>/` folder, and refuses otherwise. After committing
 it pushes to `origin main`; if the push fails, the commit stays local and the
 script exits with an error, so run `git push origin main` yourself once it's fixed.
+After a successful push it prints a link to the commit on GitHub.
 
 A problem counts as **solved** once some commit touched only its folder
 (`bash/list-solved-problems.sh` lists them). The first such commit is named

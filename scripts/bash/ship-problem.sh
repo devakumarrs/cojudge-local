@@ -19,7 +19,8 @@
 #   ("Already solved" is decided by `list-solved-problems.sh`.)
 #
 # After committing, pushes to `origin main`. If the push fails, the commit
-# stays local and the script exits with an error.
+# stays local and the script exits with an error. On success, prints a link
+# to the commit on GitHub.
 #
 # Usage:
 #   ./scripts/bash/ship-problem.sh
@@ -114,4 +115,13 @@ if ! git push origin main; then
     exit 1
 fi
 
-echo -e "\n${GREEN}✅ Pushed to origin/main.${NC}\n"
+echo -e "\n${GREEN}✅ Pushed to origin/main.${NC}"
+
+# 9. Print a link to the commit on GitHub. Skipped if the remote URL isn't
+#    a recognized SSH or HTTPS form; the push already succeeded either way.
+REPO_URL=$(git remote get-url origin 2>/dev/null \
+    | sed -E -e 's#^git@([^:]+):#https://\1/#' -e 's#\.git$##' || true)
+if [[ "$REPO_URL" =~ ^https://[^/]+/.+/.+$ ]]; then
+    echo -e " ↳ ${BOLD}Link    : ${NC}${CYAN}$REPO_URL/commit/$(git rev-parse HEAD)${NC}"
+fi
+echo
