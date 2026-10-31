@@ -4,7 +4,8 @@ merge-vscode-settings.py
 ------------------------
 Prints the contents for `.vscode/settings.json`: the tracked base settings
 (`.vscode/settings.base.json`, if present) with `java.project.sourcePaths`
-scoped to the active problem directory.
+scoped to the active problem directory. Top-level string values starting
+with `$HOME` or `~` are expanded, since VS Code doesn't expand them.
 
 Usage:
   merge-vscode-settings.py <base_settings_json> <relative_problem_dir>
@@ -35,6 +36,10 @@ def main():
         if not isinstance(settings, dict):
             print(f"✖ {base_path} must contain a JSON object", file=sys.stderr)
             return 1
+    # VS Code doesn't expand $HOME or ~ in settings, so expand them here.
+    for key, value in settings.items():
+        if isinstance(value, str) and value.startswith(("$HOME", "${HOME}", "~")):
+            settings[key] = os.path.expanduser(os.path.expandvars(value))
     settings["java.project.sourcePaths"] = [source_dir]
     print(json.dumps(settings, indent=4, ensure_ascii=False))
     return 0
