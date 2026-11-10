@@ -18,6 +18,3 @@ problems/*/explanation*.png
 problems/*/example*.png
 problems/*/tc[0-9]*.png
 .cojudge-seed.json
-
-# CoJudge browser backups
-backups/
