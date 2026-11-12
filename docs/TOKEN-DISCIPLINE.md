@@ -28,8 +28,9 @@ turn each). The repo is 34 MB of problem content: ~3,100 `.java`, ~2,070 `.json`
 | Junk-read deny list | `.claude/settings.json` (tracked) | `backups/**`, `**/official-tests.json`, `**/Marker.java`, `.cojudge-seed.json`, `.vscode/settings.json`, `*.png`/`*.jpg`, `*.class`, `__pycache__`, `*.pyc`, `*.log`, `.DS_Store` |
 | Bash allow list | `.claude/settings.json` (tracked) | `scripts/py/generate-main.py`, `scripts/py/merge-vscode-settings.py`, `scripts/bash/{compile-problem,list-solved-problems,init-slugs}.sh`, `javac`, `java` |
 
-No doc guard here: the only tracked prose is `README.md`, `CLAUDE.md` and `scripts/README.md`,
-all under 4 KiB, so `fit-reads` already covers them.
+The global doc guard is switched off here (`.claude/doc-guard.json` is `{"enabled": false}`): the only
+tracked prose is `README.md`, `CLAUDE.md` and `scripts/README.md`, all under 4 KiB, so `fit-reads`
+already covers them.
 
 ## Decisions
 
@@ -44,7 +45,7 @@ all under 4 KiB, so `fit-reads` already covers them.
 
 ## Verification
 
-- `bash ~/code/token-discipline-proposal/scripts/check-hooks.sh --installed` → four `PASS` lines.
+- `bash ~/code/token-discipline-proposal/scripts/check-hooks.sh --installed` → six `PASS` lines (five hooks plus every repo's doc-guard config).
 - `python3 ~/code/token-discipline-proposal/scripts/tokstats.py --since YYYY-MM-DD cojudge-local` → sessions, turns, average and peak context, stubbed results, index vs search calls, re-reads. Compare with the table above before changing any rule.
 - `python3 -c 'import json;json.load(open(".claude/settings.json"))'` after editing rules.
 - Every deny or allow entry traces back to a path or command seen in a transcript (`scripts/permstats.py` derives candidates).
