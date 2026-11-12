@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(python3 scripts/py/generate-main.py:*)",
+      "Bash(python3 scripts/py/merge-vscode-settings.py:*)",
+      "Bash(bash scripts/bash/compile-problem.sh:*)",
+      "Bash(bash scripts/bash/list-solved-problems.sh:*)",
+      "Bash(bash scripts/bash/init-slugs.sh:*)",
+      "Bash(javac:*)",
+      "Bash(java:*)"
+    ],
+    "deny": [
+      "Read(backups/**)",
+      "Read(**/__pycache__/**)",
+      "Read(**/*.pyc)",
+      "Read(**/*.class)",
+      "Read(**/*.png)",
+      "Read(**/*.jpg)",
+      "Read(**/official-tests.json)",
+      "Read(**/Marker.java)",
+      "Read(.cojudge-seed.json)",
+      "Read(.vscode/settings.json)",
+      "Read(**/*.log)",
+      "Read(**/.DS_Store)"
+    ]
+  }
+}
