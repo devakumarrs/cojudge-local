@@ -50,6 +50,11 @@ notes, `scripts/`, `.vscode/` and the READMEs are published.
 - Some of my commits have GitHub commit comments (notes for later). Keep them
   when rewriting history.
 
+## Token discipline
+
+- Global hooks in `~/.claude/hooks/` (wired by `~/.claude/settings.json`) trim Reads to 4 KiB, refuse unpiped `cat` over 4 KiB, compact at 100k context and warn at 60k/80k/100k. Measured 2026-11-12: one session of 166 turns, average context 74k, peak 148k.
+- One item per session, then commit and `/clear`. Keep tool results under 4 KiB (`grep -n`, range `Read`, `| head -c 3800`). Use `ctx_execute` with a `file` field for big files; no `ctx_index` unless a search follows (0 searches so far).
+
 ## How I like to work
 
 - When I say "just answer", answer and don't touch files.
