@@ -1,26 +1,23 @@
-import java.util.*;
-
 class Solution {
     public int[] asteroidCollision(int[] asteroids) {
-        Deque<Integer> st = new ArrayDeque<>();
-        for (int ast : asteroids) {
-            if (st.isEmpty() || st.peek() < 0 || ast > 0) {
-                st.push(ast);
+        int i = -1, j = 0;
+        while (j < asteroids.length) {
+            if (i < 0 || asteroids[i] < 0 || asteroids[j] > 0) {
+                asteroids[++i] = asteroids[j++];
                 continue;
             }
-            while (!st.isEmpty() && st.peek() > 0 && st.peek() < -ast) {
-                st.pop();
+            while (i >= 0 && asteroids[i] > 0 && asteroids[i] < -asteroids[j]) {
+                i--;
             }
-            if (st.isEmpty() || st.peek() < 0) {
-                st.push(ast);
-            } else if (st.peek() == -ast) {
-                st.pop();
+            if (i < 0 || asteroids[i] < 0) {
+                asteroids[++i] = asteroids[j];
+            } else if (asteroids[i] == -asteroids[j]) {
+                i--;
             }
+            j++;
         }
-        int[] res = new int[st.size()];
-        for (int i = res.length - 1; i >= 0; i--) {
-            res[i] = st.pop();
-        }
-        return res;
+        int[] arr = new int[i + 1];
+        System.arraycopy(asteroids, 0, arr, 0, i + 1);
+        return arr;
     }
 }
