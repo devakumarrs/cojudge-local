@@ -38,5 +38,6 @@
     "java.format.settings.profile": "GoogleStyle",
     "java.format.comments.enabled": false,
     "claudeCode.preferredLocation": "panel",
-    "debug.onTaskErrors": "abort"
+    "debug.onTaskErrors": "abort",
+    "debug.console.collapseIdenticalLines": false
 }
