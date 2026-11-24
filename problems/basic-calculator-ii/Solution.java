@@ -2,11 +2,12 @@ import java.util.*;
 
 class Solution {
     public int calculate(String s) {
-        s = convertToPostFix(s);
-        Deque<Integer> st = new ArrayDeque<>();
+        // ONE PASS SOLUTION
+        Deque<Integer> stNum = new ArrayDeque<>();
+        Deque<Character> stOp = new ArrayDeque<>();
         for (int i = 0; i < s.length(); i++) {
             char ch = s.charAt(i);
-            if (ch == ',') {
+            if (Character.isWhitespace(ch)) {
                 continue;
             } else if (Character.isDigit(ch)) {
                 int n = 0;
@@ -15,53 +16,38 @@ class Solution {
                     i++;
                 }
                 i--;
-                st.push(n);
+                stNum.push(n);
+            } else if (ch == '+' || ch == '-') {
+                processAll(stNum, stOp);
+                stOp.push(ch);
             } else {
-                int num2 = st.pop();
-                int num1 = st.pop();
-                int result = switch (ch) {
-                    case '+' -> num1 + num2;
-                    case '-' -> num1 - num2;
-                    case '*' -> num1 * num2;
-                    default -> num1 / num2;
-                };
-                st.push(result);
+                if (!stOp.isEmpty() && (stOp.peek() == '*' || stOp.peek() == '/')) {
+                    int n2 = stNum.pop();
+                    int n1 = stNum.pop();
+                    int result = switch (stOp.pop()) {
+                        case '*' -> n1 * n2;
+                        default -> n1 / n2;
+                    };
+                    stNum.push(result);
+                }
+                stOp.push(ch);
             }
         }
-        return st.pop();
+        processAll(stNum, stOp);
+        return stNum.pop();
     }
 
-    private String convertToPostFix(String s) {
-        StringBuilder sb = new StringBuilder();
-        Deque<Character> st = new ArrayDeque<>();
-        int i = 0;
-        while (i < s.length()) {
-            char ch = s.charAt(i);
-            if (Character.isWhitespace(ch)) {
-                i++;
-            } else if (Character.isDigit(ch)) {
-                while (i < s.length() && Character.isDigit(s.charAt(i))) {
-                    sb.append(s.charAt(i));
-                    i++;
-                }
-                sb.append(',');
-            } else if (ch == '+' || ch == '-') {
-                while (!st.isEmpty()) {
-                    sb.append(st.pop());
-                }
-                st.push(ch);
-                i++;
-            } else {
-                if (!st.isEmpty() && (st.peek() == '*' || st.peek() == '/')) {
-                    sb.append(st.pop());
-                }
-                st.push(ch);
-                i++;
-            }
+    private void processAll(Deque<Integer> stNum, Deque<Character> stOp) {
+        while (!stOp.isEmpty()) {
+            int n2 = stNum.pop();
+            int n1 = stNum.pop();
+            int result = switch (stOp.pop()) {
+                case '+' -> n1 + n2;
+                case '-' -> n1 - n2;
+                case '*' -> n1 * n2;
+                default -> n1 / n2;
+            };
+            stNum.push(result);
         }
-        while (!st.isEmpty()) {
-            sb.append(st.pop());
-        }
-        return sb.toString();
     }
 }
