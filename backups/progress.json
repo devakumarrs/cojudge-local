@@ -11,7 +11,9 @@
     "copy-list-with-random-pointer": "[{\"fileId\":\"46b02648-1161-4075-b39a-ca1848e1f537\",\"fileName\":\"Solution\",\"language\":\"java\",\"content\":\"class Solution {\\n    public int[][] copyRandomList(int[][] nodes) {\\n        \\n    }\\n}\",\"viewState\":\"{\\\"cursorState\\\":[{\\\"inSelectionMode\\\":false,\\\"selectionStart\\\":{\\\"lineNumber\\\":3,\\\"column\\\":9},\\\"position\\\":{\\\"lineNumber\\\":3,\\\"column\\\":9}}],\\\"viewState\\\":{\\\"scrollLeft\\\":0,\\\"firstPosition\\\":{\\\"lineNumber\\\":1,\\\"column\\\":1},\\\"firstPositionDeltaTop\\\":0},\\\"contributionsState\\\":{\\\"editor.contrib.folding\\\":{\\\"lineCount\\\":5,\\\"provider\\\":\\\"indent\\\",\\\"foldedImports\\\":false},\\\"editor.contrib.wordHighlighter\\\":false}}\",\"isActive\":false,\"order\":0}]",
     "asteroid-collision": "[{\"fileId\":\"034ff67c-95d4-453d-b201-4e0900927b7f\",\"fileName\":\"Solution\",\"language\":\"java\",\"content\":\"import java.util.*;\\n\\nclass Solution {\\n    public int[] asteroidCollision(int[] asteroids) {\\n        Deque<Integer> st = new ArrayDeque<>();\\n        for (int ast : asteroids) {\\n            if (st.isEmpty() || st.peek() < 0 || ast > 0) {\\n                st.push(ast);\\n                continue;\\n            }\\n            while (!st.isEmpty() && st.peek() > 0 && st.peek() < -ast) {\\n                st.pop();\\n            }\\n            if (st.isEmpty() || st.peek() < 0) {\\n                st.push(ast);\\n            } else if (st.peek() == -ast) {\\n                st.pop();\\n            }\\n        }\\n        int[] res = new int[st.size()];\\n        for (int i = res.length - 1; i >= 0; i--) {\\n            res[i] = st.pop();\\n        }\\n        return res;\\n    }\\n}\",\"viewState\":\"{\\\"cursorState\\\":[{\\\"inSelectionMode\\\":false,\\\"selectionStart\\\":{\\\"lineNumber\\\":26,\\\"column\\\":2},\\\"position\\\":{\\\"lineNumber\\\":26,\\\"column\\\":2}}],\\\"viewState\\\":{\\\"scrollLeft\\\":0,\\\"firstPosition\\\":{\\\"lineNumber\\\":12,\\\"column\\\":1},\\\"firstPositionDeltaTop\\\":-14},\\\"contributionsState\\\":{\\\"editor.contrib.folding\\\":{\\\"lineCount\\\":26,\\\"provider\\\":\\\"indent\\\",\\\"foldedImports\\\":false},\\\"editor.contrib.wordHighlighter\\\":false}}\",\"isActive\":false,\"order\":0}]",
     "number-of-provinces": "[{\"fileId\":\"94ceaf64-ca79-49ee-86be-3437602426ed\",\"fileName\":\"Solution\",\"language\":\"java\",\"content\":\"import java.util.*;\\n\\nclass Solution {\\n    private class DisjointSet {\\n        int n;\\n        int[] size;\\n        int[] parent;\\n\\n        public DisjointSet(int n) {\\n            this.n = n;\\n            parent = new int[n];\\n            size = new int[n];\\n            Arrays.fill(size, 1);\\n            for (int i = 0; i < n; i++) {\\n                parent[i] = i;\\n            }\\n        }\\n\\n        int fup(int node) {\\n            if (node == parent[node]) {\\n                return node;\\n            }\\n            parent[node] = fup(parent[node]);\\n            return parent[node];\\n        }\\n\\n        void ubs(int n1, int n2) {\\n            int u1 = fup(n1);\\n            int u2 = fup(n2);\\n            if (u1 == u2)\\n                return;\\n            if (size[u1] > size[u2]) {\\n                size[u1] += size[u2];\\n                parent[u2] = u1;\\n            } else {\\n                size[u2] += size[u1];\\n                parent[u1] = u2;\\n            }\\n            n--;\\n        }\\n    }\\n\\n    public int findCircleNum(int[][] isConnected) {\\n        int n = isConnected.length;\\n        DisjointSet ds = new DisjointSet(n);\\n        for (int i = 0; i < n; i++) {\\n            for (int j = i + 1; j < n; j++) {\\n                if (isConnected[i][j] == 1) {\\n                    ds.ubs(i, j);\\n                }\\n            }\\n        }\\n        return ds.n;\\n    }\\n}\",\"viewState\":\"{\\\"cursorState\\\":[{\\\"inSelectionMode\\\":false,\\\"selectionStart\\\":{\\\"lineNumber\\\":55,\\\"column\\\":2},\\\"position\\\":{\\\"lineNumber\\\":55,\\\"column\\\":2}}],\\\"viewState\\\":{\\\"scrollLeft\\\":0,\\\"firstPosition\\\":{\\\"lineNumber\\\":41,\\\"column\\\":1},\\\"firstPositionDeltaTop\\\":-14},\\\"contributionsState\\\":{\\\"editor.contrib.folding\\\":{\\\"lineCount\\\":55,\\\"provider\\\":\\\"indent\\\",\\\"foldedImports\\\":false},\\\"editor.contrib.wordHighlighter\\\":false}}\",\"isActive\":false,\"order\":0}]",
-    "accounts-merge": "[{\"fileId\":\"147656a2-0e2e-4810-ac71-24845ba36a99\",\"fileName\":\"Solution\",\"language\":\"java\",\"content\":\"import java.util.*;\\n\\nclass Solution {\\n    private class DisjointSet {\\n        int n;\\n        int[] parent;\\n        int[] size;\\n\\n        public DisjointSet(List<List<String>> accounts) {\\n            n = accounts.size();\\n            parent = new int[n];\\n            size = new int[n];\\n            for (int i = 0; i < accounts.size(); i++) {\\n                parent[i] = i;\\n                size[i] = accounts.get(i).size() - 1;\\n            }\\n        }\\n\\n        int fup(int node) {\\n            if (node == parent[node]) {\\n                return node;\\n            }\\n            parent[node] = fup(parent[node]);\\n            return parent[node];\\n        }\\n\\n        void ubs(int n1, int n2) {\\n            int u1 = fup(n1);\\n            int u2 = fup(n2);\\n            if (u1 == u2)\\n                return;\\n            if (size[u1] >= size[u2]) {\\n                size[u1] += size[u2];\\n                parent[u2] = u1;\\n            } else {\\n                size[u2] += size[u1];\\n                parent[u1] = u2;\\n            }\\n        }\\n    };\\n\\n    public List<List<String>> accountsMerge(List<List<String>> accounts) {\\n        DisjointSet ds = new DisjointSet(accounts);\\n        Map<String, Integer> emailToIndex = new HashMap<>();\\n        for (int i = 0; i < accounts.size(); i++) {\\n            for (int j = 1; j < accounts.get(i).size(); j++) {\\n                String email = accounts.get(i).get(j);\\n                if (emailToIndex.containsKey(email)) {\\n                    ds.ubs(i, emailToIndex.get(email));\\n                } else {\\n                    emailToIndex.put(email, i);\\n                }\\n            }\\n        }\\n        Map<Integer, List<Integer>> upMap = new HashMap<>();\\n        for (int i = 0; i < accounts.size(); i++) {\\n            int up = ds.fup(i);\\n            upMap.computeIfAbsent(up, k -> new ArrayList<>()).add(i);\\n        }\\n        List<List<String>> result = new ArrayList<>();\\n        for (var entry : upMap.entrySet()) {\\n            var emails = new TreeSet<String>();\\n            for (int index : entry.getValue()) {\\n                for (int i = 1; i < accounts.get(index).size(); i++) {\\n                    emails.add(accounts.get(index).get(i));\\n                }\\n            }\\n            var list = new ArrayList<>(emails);\\n            list.add(0, accounts.get(entry.getKey()).get(0));\\n            result.add(list);\\n        }\\n        return result;\\n    }\\n}\",\"viewState\":\"{\\\"cursorState\\\":[{\\\"inSelectionMode\\\":false,\\\"selectionStart\\\":{\\\"lineNumber\\\":74,\\\"column\\\":2},\\\"position\\\":{\\\"lineNumber\\\":74,\\\"column\\\":2}}],\\\"viewState\\\":{\\\"scrollLeft\\\":0,\\\"firstPosition\\\":{\\\"lineNumber\\\":65,\\\"column\\\":1},\\\"firstPositionDeltaTop\\\":-5},\\\"contributionsState\\\":{\\\"editor.contrib.folding\\\":{\\\"lineCount\\\":74,\\\"provider\\\":\\\"indent\\\",\\\"foldedImports\\\":false},\\\"editor.contrib.wordHighlighter\\\":false}}\",\"isActive\":false,\"order\":0}]"
+    "accounts-merge": "[{\"fileId\":\"147656a2-0e2e-4810-ac71-24845ba36a99\",\"fileName\":\"Solution\",\"language\":\"java\",\"content\":\"import java.util.*;\\n\\nclass Solution {\\n    private class DisjointSet {\\n        int n;\\n        int[] parent;\\n        int[] size;\\n\\n        public DisjointSet(List<List<String>> accounts) {\\n            n = accounts.size();\\n            parent = new int[n];\\n            size = new int[n];\\n            for (int i = 0; i < accounts.size(); i++) {\\n                parent[i] = i;\\n                size[i] = accounts.get(i).size() - 1;\\n            }\\n        }\\n\\n        int fup(int node) {\\n            if (node == parent[node]) {\\n                return node;\\n            }\\n            parent[node] = fup(parent[node]);\\n            return parent[node];\\n        }\\n\\n        void ubs(int n1, int n2) {\\n            int u1 = fup(n1);\\n            int u2 = fup(n2);\\n            if (u1 == u2)\\n                return;\\n            if (size[u1] >= size[u2]) {\\n                size[u1] += size[u2];\\n                parent[u2] = u1;\\n            } else {\\n                size[u2] += size[u1];\\n                parent[u1] = u2;\\n            }\\n        }\\n    };\\n\\n    public List<List<String>> accountsMerge(List<List<String>> accounts) {\\n        DisjointSet ds = new DisjointSet(accounts);\\n        Map<String, Integer> emailToIndex = new HashMap<>();\\n        for (int i = 0; i < accounts.size(); i++) {\\n            for (int j = 1; j < accounts.get(i).size(); j++) {\\n                String email = accounts.get(i).get(j);\\n                if (emailToIndex.containsKey(email)) {\\n                    ds.ubs(i, emailToIndex.get(email));\\n                } else {\\n                    emailToIndex.put(email, i);\\n                }\\n            }\\n        }\\n        Map<Integer, List<Integer>> upMap = new HashMap<>();\\n        for (int i = 0; i < accounts.size(); i++) {\\n            int up = ds.fup(i);\\n            upMap.computeIfAbsent(up, k -> new ArrayList<>()).add(i);\\n        }\\n        List<List<String>> result = new ArrayList<>();\\n        for (var entry : upMap.entrySet()) {\\n            var emails = new TreeSet<String>();\\n            for (int index : entry.getValue()) {\\n                for (int i = 1; i < accounts.get(index).size(); i++) {\\n                    emails.add(accounts.get(index).get(i));\\n                }\\n            }\\n            var list = new ArrayList<>(emails);\\n            list.add(0, accounts.get(entry.getKey()).get(0));\\n            result.add(list);\\n        }\\n        return result;\\n    }\\n}\",\"viewState\":\"{\\\"cursorState\\\":[{\\\"inSelectionMode\\\":false,\\\"selectionStart\\\":{\\\"lineNumber\\\":74,\\\"column\\\":2},\\\"position\\\":{\\\"lineNumber\\\":74,\\\"column\\\":2}}],\\\"viewState\\\":{\\\"scrollLeft\\\":0,\\\"firstPosition\\\":{\\\"lineNumber\\\":65,\\\"column\\\":1},\\\"firstPositionDeltaTop\\\":-5},\\\"contributionsState\\\":{\\\"editor.contrib.folding\\\":{\\\"lineCount\\\":74,\\\"provider\\\":\\\"indent\\\",\\\"foldedImports\\\":false},\\\"editor.contrib.wordHighlighter\\\":false}}\",\"isActive\":false,\"order\":0}]",
+    "subarray-sum-equals-k": "[{\"fileId\":\"3a811854-ae13-4453-8df5-b6520443f8ea\",\"fileName\":\"Solution\",\"language\":\"java\",\"content\":\"import java.util.*;\\n\\nclass Solution {\\n    public int subarraySum(int[] nums, int k) {\\n        int sum = 0;\\n        Map<Integer, Integer> freq = new HashMap<>();\\n        freq.put(0, 1);\\n        int count = 0;\\n        for (int i = 0; i < nums.length; i++) {\\n            sum += nums[i];\\n            count += freq.getOrDefault(sum - k, 0);\\n            freq.put(sum, freq.getOrDefault(sum, 0) + 1);\\n        }\\n        return count;\\n    }\\n}\",\"viewState\":\"{\\\"cursorState\\\":[{\\\"inSelectionMode\\\":false,\\\"selectionStart\\\":{\\\"lineNumber\\\":7,\\\"column\\\":24},\\\"position\\\":{\\\"lineNumber\\\":7,\\\"column\\\":24}}],\\\"viewState\\\":{\\\"scrollLeft\\\":0,\\\"firstPosition\\\":{\\\"lineNumber\\\":1,\\\"column\\\":1},\\\"firstPositionDeltaTop\\\":0},\\\"contributionsState\\\":{\\\"editor.contrib.folding\\\":{\\\"lineCount\\\":16,\\\"provider\\\":\\\"indent\\\",\\\"foldedImports\\\":false},\\\"editor.contrib.wordHighlighter\\\":false}}\",\"isActive\":false,\"order\":0}]",
+    "basic-calculator-ii": "[{\"fileId\":\"c1a4c20d-5333-4d8d-a351-4d2bcb0f81d0\",\"fileName\":\"Solution\",\"language\":\"java\",\"content\":\"import java.util.*;\\n\\nclass Solution {\\n    public int calculate(String s) {\\n        // ONE PASS SOLUTION\\n        Deque<Integer> stNum = new ArrayDeque<>();\\n        Deque<Character> stOp = new ArrayDeque<>();\\n        for (int i = 0; i < s.length(); i++) {\\n            char ch = s.charAt(i);\\n            if (Character.isWhitespace(ch)) {\\n                continue;\\n            } else if (Character.isDigit(ch)) {\\n                int n = 0;\\n                while (i < s.length() && Character.isDigit(s.charAt(i))) {\\n                    n = 10 * n + s.charAt(i) - '0';\\n                    i++;\\n                }\\n                i--;\\n                stNum.push(n);\\n            } else if (ch == '+' || ch == '-') {\\n                process(stNum, stOp);\\n                stOp.push(ch);\\n            } else {\\n                if (!stOp.isEmpty() && (stOp.peek() == '*' || stOp.peek() == '/')) {\\n                    process(stNum, stOp);\\n                }\\n                stOp.push(ch);\\n            }\\n        }\\n        process(stNum, stOp);\\n        return stNum.pop();\\n    }\\n\\n    private void process(Deque<Integer> stNum, Deque<Character> stOp) {\\n        while (!stOp.isEmpty()) {\\n            int n2 = stNum.pop();\\n            int n1 = stNum.pop();\\n            int result = switch (stOp.pop()) {\\n                case '+' -> n1 + n2;\\n                case '-' -> n1 - n2;\\n                case '*' -> n1 * n2;\\n                default -> n1 / n2;\\n            };\\n            stNum.push(result);\\n        }\\n    }\\n}\",\"viewState\":\"{\\\"cursorState\\\":[{\\\"inSelectionMode\\\":false,\\\"selectionStart\\\":{\\\"lineNumber\\\":47,\\\"column\\\":2},\\\"position\\\":{\\\"lineNumber\\\":47,\\\"column\\\":2}}],\\\"viewState\\\":{\\\"scrollLeft\\\":0,\\\"firstPosition\\\":{\\\"lineNumber\\\":42,\\\"column\\\":1},\\\"firstPositionDeltaTop\\\":0},\\\"contributionsState\\\":{\\\"editor.contrib.folding\\\":{\\\"lineCount\\\":47,\\\"provider\\\":\\\"indent\\\",\\\"foldedImports\\\":false},\\\"editor.contrib.wordHighlighter\\\":false}}\",\"isActive\":false,\"order\":0}]"
   },
   "game-results": {
     "find-minimum-in-rotated-sorted-array": [
@@ -2103,6 +2105,49 @@
         "language": "java",
         "timestamp": 1795096981830
       }
+    ],
+    "subarray-sum-equals-k": [
+      {
+        "runCount": 2,
+        "submitCount": 1,
+        "timeSpent": 36,
+        "runScore": 80,
+        "submitScore": 100,
+        "timeScore": 97,
+        "totalScore": 95,
+        "rank": "S",
+        "code": "import java.util.*;\n\nclass Solution {\n    public int subarraySum(int[] nums, int k) {\n        int sum = 0;\n        Map<Integer, Integer> freq = new HashMap<>();\n        freq.put(0, 1);\n        int count = 0;\n        for (int i = 0; i < nums.length; i++) {\n            sum += nums[i];\n            count += freq.getOrDefault(sum - k, 0);\n            freq.put(sum, freq.getOrDefault(sum, 0) + 1);\n        }\n        return count;\n    }\n}",
+        "language": "java",
+        "timestamp": 1795167150801
+      }
+    ],
+    "basic-calculator-ii": [
+      {
+        "runCount": 1,
+        "submitCount": 1,
+        "timeSpent": 12,
+        "runScore": 90,
+        "submitScore": 100,
+        "timeScore": 99,
+        "totalScore": 98,
+        "rank": "S",
+        "code": "import java.util.*;\n\nclass Solution {\n    public int calculate(String s) {\n        s = convertToPostFix(s);\n        Deque<Integer> st = new ArrayDeque<>();\n        for (int i = 0; i < s.length(); i++) {\n            char ch = s.charAt(i);\n            if (ch == ',') {\n                continue;\n            } else if (Character.isDigit(ch)) {\n                int n = 0;\n                while (i < s.length() && Character.isDigit(s.charAt(i))) {\n                    n = 10 * n + s.charAt(i) - '0';\n                    i++;\n                }\n                i--;\n                st.push(n);\n            } else {\n                int num2 = st.pop();\n                int num1 = st.pop();\n                int result = switch (ch) {\n                    case '+' -> num1 + num2;\n                    case '-' -> num1 - num2;\n                    case '*' -> num1 * num2;\n                    default -> num1 / num2;\n                };\n                st.push(result);\n            }\n        }\n        return st.pop();\n    }\n\n    private String convertToPostFix(String s) {\n        StringBuilder sb = new StringBuilder();\n        Deque<Character> st = new ArrayDeque<>();\n        int i = 0;\n        while (i < s.length()) {\n            char ch = s.charAt(i);\n            if (Character.isWhitespace(ch)) {\n                i++;\n            } else if (Character.isDigit(ch)) {\n                while (i < s.length() && Character.isDigit(s.charAt(i))) {\n                    sb.append(s.charAt(i));\n                    i++;\n                }\n                sb.append(',');\n            } else if (ch == '+' || ch == '-') {\n                while (!st.isEmpty()) {\n                    sb.append(st.pop());\n                }\n                st.push(ch);\n                i++;\n            } else {\n                if (!st.isEmpty() && (st.peek() == '*' || st.peek() == '/')) {\n                    sb.append(st.pop());\n                }\n                st.push(ch);\n                i++;\n            }\n        }\n        while (!st.isEmpty()) {\n            sb.append(st.pop());\n        }\n        return sb.toString();\n    }\n}",
+        "language": "java",
+        "timestamp": 1795516938433
+      },
+      {
+        "runCount": 0,
+        "submitCount": 1,
+        "timeSpent": 3,
+        "runScore": 100,
+        "submitScore": 100,
+        "timeScore": 99.75,
+        "totalScore": 100,
+        "rank": "S",
+        "code": "import java.util.*;\n\nclass Solution {\n    public int calculate(String s) {\n        Deque<Integer> stNum = new ArrayDeque<>();\n        Deque<Character> stOp = new ArrayDeque<>();\n        for (int i = 0; i < s.length(); i++) {\n            char ch = s.charAt(i);\n            if (Character.isWhitespace(ch)) {\n                continue;\n            } else if (Character.isDigit(ch)) {\n                int n = 0;\n                while (i < s.length() && Character.isDigit(s.charAt(i))) {\n                    n = 10 * n + s.charAt(i) - '0';\n                    i++;\n                }\n                i--;\n                stNum.push(n);\n            } else if (ch == '+' || ch == '-') {\n                while (!stOp.isEmpty()) {\n                    int n2 = stNum.pop();\n                    int n1 = stNum.pop();\n                    int result = switch (stOp.pop()) {\n                        case '+' -> n1 + n2;\n                        case '-' -> n1 - n2;\n                        case '*' -> n1 * n2;\n                        default -> n1 / n2;\n                    };\n                    stNum.push(result);\n                }\n                stOp.push(ch);\n            } else {\n                if (!stOp.isEmpty() && (stOp.peek() == '*' || stOp.peek() == '/')) {\n                    int n2 = stNum.pop();\n                    int n1 = stNum.pop();\n                    int result = switch (stOp.pop()) {\n                        case '*' -> n1 * n2;\n                        default -> n1 / n2;\n                    };\n                    stNum.push(result);\n                }\n                stOp.push(ch);\n            }\n        }\n        while (!stOp.isEmpty()) {\n            int n2 = stNum.pop();\n            int n1 = stNum.pop();\n            int result = switch (stOp.pop()) {\n                case '+' -> n1 + n2;\n                case '-' -> n1 - n2;\n                case '*' -> n1 * n2;\n                default -> n1 / n2;\n            };\n            stNum.push(result);\n        }\n        return stNum.pop();\n    }\n}",
+        "language": "java",
+        "timestamp": 1795518645705
+      }
     ]
   },
   "group-sort": {},
@@ -2394,6 +2439,53 @@
         "correctAnswer": "[[Ethan,Ethan0@m.co,Ethan4@m.co,Ethan5@m.co],[Fern,Fern0@m.co,Fern1@m.co,Fern5@m.co],[Gabe,Gabe0@m.co,Gabe1@m.co,Gabe3@m.co],[Hanzo,Hanzo0@m.co,Hanzo1@m.co,Hanzo3@m.co],[Kevin,Kevin0@m.co,Kevin3@m.co,Kevin5@m.co]]",
         "isCorrect": true
       }
+    ],
+    "subarray-sum-equals-k": [
+      {
+        "nums": "[1,1,1]",
+        "k": 2,
+        "correctAnswer": "2",
+        "isCorrect": true
+      },
+      {
+        "nums": "[1,2,3]",
+        "k": 3,
+        "correctAnswer": "2",
+        "isCorrect": true
+      },
+      {
+        "nums": [
+          1,
+          -1,
+          1,
+          -1
+        ],
+        "k": 0,
+        "correctAnswer": "4",
+        "isCorrect": true
+      }
+    ],
+    "basic-calculator-ii": [
+      {
+        "s": "3+2*2",
+        "correctAnswer": "7",
+        "isCorrect": true
+      },
+      {
+        "s": " 3/2 ",
+        "correctAnswer": "1",
+        "isCorrect": true
+      },
+      {
+        "s": " 3+5 / 2 ",
+        "correctAnswer": "5",
+        "isCorrect": true
+      },
+      {
+        "s": "1*2-3/4+5*6-7*8+9/10",
+        "correctAnswer": "-24",
+        "isCorrect": true
+      }
     ]
   },
   "user-bookmarks": {},
@@ -2519,7 +2611,9 @@
     "two-sum": true,
     "asteroid-collision": true,
     "number-of-provinces": true,
-    "accounts-merge": true
+    "accounts-merge": true,
+    "subarray-sum-equals-k": true,
+    "basic-calculator-ii": true
   },
   "user-settings": {
     "preferredLanguage": "java",
